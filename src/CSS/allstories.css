@@ -1,0 +1,561 @@
+/* AllStories.css - Inspired by kumquat.co aesthetic */
+
+.stories-collection-container {
+    font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.6;
+}
+
+
+/* Main Content */
+.stories-collection-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Controls Section */
+.stories-collection-controls {
+    padding: 80px 0 40px;
+}
+
+.collection-controls-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.collection-controls-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.collection-controls-description {
+    font-size: 1.125rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.collection-controls-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto;
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.collection-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.collection-control-group-full {
+    grid-column: 1 / -1;
+}
+
+.collection-control-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Search Input */
+.collection-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.collection-search-input {
+    width: 100%;
+    padding: 16px 52px 16px 20px;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collection-search-input:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+}
+
+.search-icon {
+    position: absolute;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    fill: #666;
+    pointer-events: none;
+}
+
+/* Sort Select */
+.collection-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.collection-sort-select {
+    width: 100%;
+    padding: 16px 52px 16px 20px;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+    cursor: pointer;
+    appearance: none;
+    transition: border-color 0.2s ease;
+}
+
+.collection-sort-select:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.sort-icon {
+    position: absolute;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    fill: #666;
+    pointer-events: none;
+}
+
+/* Buttons */
+.collection-clear-filters-btn {
+    padding: 16px 24px;
+    background: #f8f9fa;
+    color: #000;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 24px;
+}
+
+.collection-clear-filters-btn:hover:not(:disabled) {
+    background: #eaeaea;
+}
+
+.collection-clear-filters-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Category Section */
+.collection-category-section {
+    margin-top: 48px;
+}
+
+.collection-category-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.collection-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.collection-category-card {
+    position: relative;
+    padding: 16px 20px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.collection-category-card:hover {
+    border-color: #000;
+    transform: translateY(-2px);
+}
+
+.collection-category-card-active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.collection-category-name {
+    font-size: 0.875rem;
+}
+
+.collection-active-indicator {
+    display: flex;
+    align-items: center;
+}
+
+.collection-indicator-dot {
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+}
+
+/* Results Info */
+.collection-results-info {
+    padding: 32px 0;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 48px;
+}
+
+.collection-results-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.collection-results-count {
+    font-weight: 600;
+    color: #000;
+}
+
+.collection-results-separator {
+    color: #999;
+}
+
+.collection-results-category,
+.collection-results-search {
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* Error State */
+.stories-collection-error {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.stories-collection-error-content {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.error-icon {
+    width: 64px;
+    height: 64px;
+    fill: #666;
+}
+
+.stories-collection-error-text h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.stories-collection-error-text p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.collection-btn-retry {
+    padding: 12px 24px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.collection-btn-retry:hover {
+    background: #333;
+}
+
+/* Loading State */
+.stories-collection-loading {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.stories-collection-loading-content {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.stories-collection-loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+.loading-icon {
+    width: 64px;
+    height: 64px;
+    fill: #000;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.stories-collection-loading-text h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.stories-collection-loading-text p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Stories Grid */
+.stories-collection-grid-section {
+    padding: 40px 0 80px;
+}
+
+.stories-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 32px;
+}
+
+.stories-collection-card {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stories-collection-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+}
+
+.stories-collection-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.stories-collection-image {
+    position: relative;
+    height: 200px;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.stories-collection-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stories-collection-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.stories-collection-placeholder-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-icon {
+    width: 48px;
+    height: 48px;
+    fill: #666;
+}
+
+.stories-collection-category-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #000;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stories-collection-card-content {
+    padding: 24px;
+}
+
+.stories-collection-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.stories-collection-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    color: #000;
+}
+
+.stories-collection-excerpt {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+}
+
+.stories-collection-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+}
+
+.stories-collection-author {
+    color: #000;
+    font-weight: 500;
+}
+
+.stories-collection-tags {
+    display: flex;
+    gap: 6px;
+}
+
+.stories-collection-tag {
+    background: #f8f9fa;
+    color: #666;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stories-collection-tag-more {
+    background: #eaeaea;
+}
+
+/* Empty State */
+.stories-collection-empty {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.stories-collection-empty-content {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    fill: #666;
+}
+
+.stories-collection-empty-text h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.stories-collection-empty-text p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.collection-btn-primary {
+    padding: 12px 24px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.collection-btn-primary:hover {
+    background: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stories-hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .stories-hero-stats {
+        flex-direction: column;
+        gap: 24px;
+    }
+    
+    .collection-controls-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .stories-collection-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .collection-category-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .stories-collection-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stories-collection-main {
+        padding: 0 20px;
+    }
+    
+    .collection-controls-title {
+        font-size: 2rem;
+    }
+    
+    .stories-collection-grid {
+        grid-template-columns: 1fr;
+    }
+}

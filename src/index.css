@@ -1,106 +1,188 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+/* index.css - Black & White Glassmorphism Theme with Splash of Color */
+/* Following Gestalt Principles and Don Norman's Design Teachings */
 
-/* base styles */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=SUSE:wght@400;500;600;700&display=swap');
+
+/* CSS Custom Properties for Consistent Theming */
+:root {
+  /* Black & White Color Palette */
+  --primary-black: #000000;
+  --secondary-black: #1a1a1a;
+  --accent-gray: #333333;
+  --medium-gray: #666666;
+  --light-gray: #e0e0e0;
+  --secondary-white: #f5f5f5;
+  --primary-white: #ffffff;
+  
+  /* Splash of Color */
+  --accent-color: #03A9F4; /* Blue */
+  
+  /* Glassmorphism Variables */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: rgba(0, 0, 0, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.08);
+  
+  /* Typography Scale - Modular Scale Ratio 1.25 */
+  --text-xs: 0.8rem;
+  --text-sm: 1rem;
+  --text-base: 1.25rem;
+  --text-lg: 1.563rem;
+  --text-xl: 1.953rem;
+  --text-2xl: 2.441rem;
+  
+  /* Spacing Scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+/* Reset and Base Styles */
 * {
-  margin: 0;
-  font-family: "Quicksand";
-  color: white;
-  background: #333;
-}
-.navbar {
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  max-width: 600px;
-  margin: 0 auto;
-  border-bottom: 1px solid #f2f2f2;
-}
-.navbar h1 {
-  color: #f1356d;
-}
-.navbar .links {
-  margin-left: auto;
-}
-.navbar a {
-  margin-left: 16px;
-  text-decoration: none;
-  padding: 6px;
-}
-.navbar a:hover {
-  color: #f1356d;
-}
-.content {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-/* blog previews / list */
-.blog-preview {
-  padding: 10px 16px;
-  margin: 20px 0;
-  border-bottom: 1px solid #fafafa;
-}
-.blog-preview:hover {
-  box-shadow: 1px 3px 5px rgba(0,0,0,0.1);
-}
-.blog-preview h2 {
-  font-size: 20px;
-  color: #f1356d;
-  margin-bottom: 8px;
-}
-.blog-preview a{
-  text-decoration: none;
-}
-
-/* blog details page */
-.blog-details h2 {
-  font-size: 20px;
-  color: #f1356d;
-  margin-bottom: 10px;
-}
-.blog-details div {
-  margin: 20px 0;
-}
-.blog-details button {
-  background: #f1356d;
-  color: #fff;
-  border: 0;
-  padding: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* create new blog form */
-.create {
-  max-width: 400px;
-  margin: 0 auto;
-  text-align: center;
-}
-.create label {
-  text-align: left;
-  display: block;
-}
-.create h2 {
-  font-size: 20px;
-  color: #f1356d;
-  margin-bottom: 30px;
-}
-.create input, .create textarea, .create select {
-  width: 100%;
-  padding: 6px 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
   box-sizing: border-box;
-  display: block;
-  border-radius: 3px;
-  min-height: 40px;
+  margin: 0;
+ 
 }
-.create button {
-  background: #f1356d;
-  color: #fff;
-  border: 0;
-  padding: 8px;
-  border-radius: 8px;
-  cursor: pointer;
+
+body {
+  font-family: 'Montserrat', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--secondary-white);
+  color: var(--primary-black);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'SUSE', monospace;
+}
+
+/* Header Styles - Gestalt: Emphasis through contrast */
+.header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding: 0 var(--space-sm);
+}
+
+.header h1 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--primary-black);
+  margin-bottom: var(--space-md);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px var(--glass-shadow);
+}
+
+/* Card component styling - Glassmorphism implementation */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Button Styles */
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--primary-white);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: var(--primary-black);
+}
+
+/* Utility classes - Gestalt: Consistency across elements */
+.text-primary {
+  color: var(--primary-black);
+}
+
+.text-secondary {
+  color: var(--medium-gray);
+}
+
+.text-accent {
+  color: var(--accent-color);
+}
+
+.bg-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+}
+
+.bg-white {
+  background: var(--primary-white);
+}
+
+.bg-light {
+  background: var(--secondary-white);
+}
+
+.border-glass {
+  border: 1px solid var(--glass-border);
+}
+
+.shadow-glass {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Mobile responsiveness - Don Norman: Adaptability */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  main {
+    padding: var(--space-md);
+  }
+  
+  .card {
+    padding: var(--space-md);
+    margin: var(--space-xs) 0;
+    border-radius: var(--radius-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+  
+  main {
+    padding: var(--space-sm);
+  }
+  
+  .card {
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+  }
 }

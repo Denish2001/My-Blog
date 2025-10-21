@@ -1,0 +1,228 @@
+/* CSS/Login.css */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 182, 193, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(216, 191, 216, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 192, 203, 0.05) 0%, transparent 50%);
+}
+
+.login-graphic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: 
+    radial-gradient(circle, transparent 20%, #ffffff 20%, #ffffff 80%, transparent 80%, transparent),
+    radial-gradient(circle, transparent 20%, #ffffff 20%, #ffffff 80%, transparent 80%, transparent) 50px 50px,
+    linear-gradient(#f8f8f8 8px, transparent 8px),
+    linear-gradient(90deg, #f8f8f8 8px, transparent 8px);
+  background-size: 100px 100px, 100px 100px, 50px 50px, 50px 50px;
+  background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+  opacity: 0.3;
+}
+
+.login-card {
+  background: white;
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 10px 15px -3px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.login-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #ffb6c1, #d8bfd8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3);
+}
+
+.login-icon svg {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.login-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.login-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.login-form {
+  space-y: 1.5rem;
+}
+
+.error-message {
+  background: rgba(255, 182, 193, 0.1);
+  border: 1px solid rgba(255, 182, 193, 0.3);
+  color: #d16b7d;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.error-message svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: white;
+  color: #1a1a1a;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #ffb6c1;
+  box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.1);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+.login-button {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #1a1a1a, #333);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.login-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #333, #4a4a4a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.login-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.footer-text {
+  color: #999;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-card {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  .login-title {
+    font-size: 1.5rem;
+  }
+  
+  .login-graphic {
+    width: 300px;
+    height: 300px;
+  }
+}

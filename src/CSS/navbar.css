@@ -1,0 +1,234 @@
+/* Navbar.css - Inspired by kumquat.co aesthetic */
+
+.navbar-container {
+    background: #fff;
+    border-bottom: 1px solid #eaeaea;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.navbar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+}
+
+/* Logo Styles */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-logo:hover {
+    opacity: 0.8;
+}
+
+.logo-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: -0.5px;
+}
+
+/* Navigation Links */
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-link:hover {
+    color: #000;
+    background: #f8f9fa;
+}
+
+.navbar-link:active {
+    transform: translateY(1px);
+}
+
+.link-text {
+    position: relative;
+    z-index: 1;
+}
+
+/* Mobile Toggle Button */
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.navbar-toggle:hover {
+    background: #f8f9fa;
+}
+
+.menu-icon,
+.close-icon {
+    width: 24px;
+    height: 24px;
+    fill: #000;
+}
+
+/* Mobile Overlay */
+.navbar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    backdrop-filter: blur(4px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar-content {
+        padding: 0 20px;
+        height: 70px;
+    }
+
+    .navbar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1001;
+    }
+
+    .navbar-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: #fff;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 100px 32px 32px;
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 999;
+        gap: 4px;
+    }
+
+    .navbar-links.navbar-active {
+        right: 0;
+    }
+
+    .navbar-link {
+        width: 100%;
+        padding: 16px 20px;
+        border-radius: 8px;
+        font-size: 1.125rem;
+        color: #000;
+        transition: all 0.2s ease;
+    }
+
+    .navbar-link:hover {
+        background: #f8f9fa;
+        color: #000;
+    }
+
+    .logo-text {
+        font-size: 1.25rem;
+    }
+
+    .logo-image {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-content {
+        padding: 0 16px;
+        height: 64px;
+    }
+
+    .navbar-links {
+        width: 100%;
+        right: -100%;
+    }
+
+    .navbar-links.navbar-active {
+        right: 0;
+    }
+
+    .logo-text {
+        font-size: 1.125rem;
+    }
+
+    .logo-image {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Active state for current page (you can add this dynamically with React Router) */
+.navbar-link[aria-current="page"] {
+    color: #000;
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+/* Focus styles for accessibility */
+.navbar-toggle:focus,
+.navbar-link:focus {
+    color: deeppink;
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .navbar-links,
+    .navbar-link,
+    .navbar-toggle,
+    .navbar-logo {
+        transition: none;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}

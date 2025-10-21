@@ -1,0 +1,73 @@
+/* components/AdvancedCursor.css */
+.advanced-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: #ffb6c1;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.2s ease;
+}
+
+.cursor-ring {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 182, 193, 0.8);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease-out;
+}
+
+.advanced-cursor.cursor-pointer .cursor-dot {
+  transform: translate(-50%, -50%) scale(1.5);
+  background: #ff6b95;
+}
+
+.advanced-cursor.cursor-pointer .cursor-ring {
+  transform: translate(-50%, -50%) scale(1.8);
+  border-color: #ff6b95;
+  opacity: 0.7;
+}
+
+.advanced-cursor.cursor-hidden {
+  opacity: 0;
+}
+
+/* Hide default cursor */
+html {
+  cursor: none;
+}
+
+html * {
+  cursor: none;
+}
+
+/* Smooth transitions for all interactive elements */
+a, button, input, textarea, select {
+  transition: all 0.3s ease;
+}
+
+/* Optional: Add magnetic effect to specific elements */
+.magnetic {
+  transition: transform 0.3s ease;
+}
+
+.magnetic:hover {
+  transform: scale(1.05);
+}
