@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import './CSS/blogdetails.css'
 
+// Import the db.json directly
+import blogData from './server/db.json'
+
 const BlogDetails = () => {
   const history = useHistory()
   const { id } = useParams()
@@ -15,20 +18,18 @@ const BlogDetails = () => {
     loadBlog()
   }, [id])
 
-  const loadBlog = async () => {
+  const loadBlog = () => {
     try {
       setIsPending(true)
-      const response = await fetch(`http://localhost:3001/blogs/${id}`)
       
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('Blog not found')
-        }
-        throw new Error('Failed to load blog')
+      // Find the blog by ID in the local data - compare as strings
+      const foundBlog = blogData.blogs.find(blog => blog.id === id)
+      
+      if (!foundBlog) {
+        throw new Error('Blog not found')
       }
 
-      const blogData = await response.json()
-      setBlog(blogData)
+      setBlog(foundBlog)
       setError(null)
     } catch (err) {
       console.error('Error loading blog:', err)
@@ -37,23 +38,20 @@ const BlogDetails = () => {
       setIsPending(false)
     }
   }
-  
+
+  // ... rest of your component remains the same
   const handleDelete = () => {
     setShowDeleteConfirm(true)
   }
 
-  const confirmDelete = async () => {
+  const confirmDelete = () => {
     try {
       setDeletePending(true)
-      const response = await fetch(`http://localhost:3001/blogs/${id}`, {
-        method: 'DELETE'
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to delete blog')
-      }
-
-      console.log("Blog deleted successfully")
+      
+      // For static site, we'll just simulate deletion and redirect
+      // In a real static site, you might want to handle this differently
+      // or remove delete functionality entirely
+      console.log("Blog deletion simulated - in static mode")
       history.push('/')
     } catch (error) {
       console.error("Error deleting blog:", error)
@@ -69,7 +67,11 @@ const BlogDetails = () => {
   }
 
   const handleEdit = () => {
-    history.push(`/edit/${id}`)
+    // For static site, you might want to disable editing
+    // or handle it differently
+    console.log("Edit functionality disabled in static mode")
+    // history.push(`/edit/${id}`)
+    alert('Edit functionality is not available in static mode')
   }
 
   // Function to safely render HTML content from the blog body
@@ -80,7 +82,7 @@ const BlogDetails = () => {
     return <div style={{whiteSpace: 'pre-wrap', lineHeight: '1.6'}}>{body}</div>
   }
 
-  // Everyday object icons
+  // Everyday object icons (keep the same)
   const Icons = {
     Edit: () => (
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -225,71 +227,11 @@ const BlogDetails = () => {
             </div>
           )}
 
-          <div className="blog-details-actions">
-            <button 
-              onClick={handleEdit}
-              className="blog-details-btn-edit"
-            >
-              <Icons.Edit />
-              Edit Story
-            </button>
-            
-            <button 
-              onClick={handleDelete}
-              className="blog-details-btn-delete"
-              disabled={deletePending}
-            >
-              <Icons.Delete />
-              {deletePending ? 'Deleting...' : 'Delete Story'}
-            </button>
-          </div>
+          {/* Remove or disable actions for static site */}
+          
         </article>
       )}
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="blog-details-modal-overlay">
-          <div className="blog-details-modal-content">
-            <div className="blog-details-modal-header">
-              <div className="blog-details-modal-icon">
-                <Icons.Warning />
-              </div>
-              <h3 className="blog-details-modal-title">Confirm Deletion</h3>
-            </div>
-            <div className="blog-details-modal-body">
-              <p className="blog-details-modal-text">
-                Are you sure you want to delete "<strong>{blog?.title}</strong>"?
-              </p>
-              <p className="blog-details-modal-warning">
-                This action cannot be undone.
-              </p>
-            </div>
-            <div className="blog-details-modal-actions">
-              <button 
-                onClick={cancelDelete}
-                className="blog-details-modal-btn-cancel"
-                disabled={deletePending}
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={confirmDelete}
-                className="blog-details-modal-btn-delete"
-                disabled={deletePending}
-              >
-                {deletePending ? (
-                  <>
-                    <div className="blog-details-modal-spinner"></div>
-                    Deleting...
-                  </>
-                ) : (
-                  'Yes, Delete'
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

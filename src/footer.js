@@ -24,9 +24,9 @@ const Footer = () => {
                     <div className="footer-brand">
                         <div className="footer-logo">
                             <div className="logo-mark">
-                                <image src="Logo.png" alt="The PGD Blog Logo" className="logo-image" />
+                                <img src="Logo.png" alt="The PGD Blog Logo" className="logo-image" />
                             </div>
-                            <span className="logo-text">The PGD Blog</span>
+                            <span style={{ color: 'white' }} className="logo-text">The PGD Blog</span>
                         </div>
                         <p className="footer-tagline">
                             Sharing stories that matter. Creating conversations that inspire.

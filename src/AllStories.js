@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { useState, useEffect } from 'react';
+import db from "./server/db.json";
 import './CSS/allstories.css';
 
 const AllStories = () => {
@@ -38,9 +39,8 @@ const AllStories = () => {
 
     const loadBlogs = () => {
         try {
-            // Combine blogs from localStorage and db.json
-            const localStorageBlogs = JSON.parse(localStorage.getItem('blogs')) || [];
-            const dbBlogs = (require('./Data/db.json').blogs || []).map(blog => ({
+            // Use only db.json data for static site
+            const dbBlogs = (db.blogs || []).map(blog => ({
                 ...blog,
                 id: parseInt(blog.id) || Date.now() + Math.random(),
                 timestamp: blog.timestamp || blog.id || Date.now(),
@@ -48,21 +48,7 @@ const AllStories = () => {
                 tags: blog.tags || []
             }));
 
-            const processedLocalBlogs = localStorageBlogs.map(blog => ({
-                ...blog,
-                id: parseInt(blog.id),
-                categories: blog.categories || ['personal'],
-                tags: blog.tags || []
-            }));
-
-            const allBlogs = [...processedLocalBlogs, ...dbBlogs];
-            
-            // Remove duplicates based on ID
-            const uniqueBlogs = allBlogs.filter((blog, index, self) => 
-                index === self.findIndex(b => b.id === blog.id)
-            );
-            
-            setBlogs(uniqueBlogs);
+            setBlogs(dbBlogs);
             setIsPending(false);
         } catch (err) {
             console.error('Error loading blogs:', err);
@@ -169,9 +155,6 @@ const AllStories = () => {
 
     return ( 
         <div className="stories-collection-container">
-            {/* Hero Section */}
-            
-
             {/* Main Content */}
             <div className="stories-collection-main">
                 {/* Controls Section */}

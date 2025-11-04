@@ -1,0 +1,16 @@
+{
+  "name": "pgd-json-server",
+  "version": "1.0.0",
+  "description": "JSON Server for PGD Articles",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "json-server --watch Data/db.json --port 3001"
+  },
+  "dependencies": {
+    "json-server": "^0.17.4"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

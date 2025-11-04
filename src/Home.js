@@ -1,5 +1,5 @@
 import BlogList from "./bloglist";
-import db from "./Data/db.json";
+import db from "./server/db.json";
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import './CSS/home.css';
@@ -39,35 +39,17 @@ const Home = () => {
 
     const loadBlogs = () => {
         try {
-            // Combine blogs from localStorage and db.json
-            const localStorageBlogs = JSON.parse(localStorage.getItem('blogs')) || [];
-            
-            // Process db.json blogs to ensure consistent structure
+            // Use only db.json data for static site
             const dbBlogs = (db.blogs || []).map(blog => ({
                 ...blog,
-                // Ensure ID is a number and add timestamp if missing
+                // Ensure consistent structure
                 id: parseInt(blog.id) || Date.now() + Math.random(),
                 timestamp: blog.timestamp || blog.id || Date.now(),
-                categories: blog.categories || ['personal'], // Default category
-                tags: blog.tags || []
-            }));
-
-            // Process localStorage blogs for consistent structure
-            const processedLocalBlogs = localStorageBlogs.map(blog => ({
-                ...blog,
-                id: parseInt(blog.id),
                 categories: blog.categories || ['personal'],
                 tags: blog.tags || []
             }));
 
-            const allBlogs = [...processedLocalBlogs, ...dbBlogs];
-            
-            // Remove duplicates based on ID
-            const uniqueBlogs = allBlogs.filter((blog, index, self) => 
-                index === self.findIndex(b => b.id === blog.id)
-            );
-            
-            setBlogs(uniqueBlogs);
+            setBlogs(dbBlogs);
             setIsPending(false);
         } catch (err) {
             console.error('Error loading blogs:', err);
