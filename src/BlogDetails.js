@@ -11,8 +11,7 @@ const BlogDetails = () => {
   const [blog, setBlog] = useState(null)
   const [isPending, setIsPending] = useState(true)
   const [error, setError] = useState(null)
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [deletePending, setDeletePending] = useState(false)
+  
   
   useEffect(() => {
     loadBlog()
@@ -39,40 +38,6 @@ const BlogDetails = () => {
     }
   }
 
-  // ... rest of your component remains the same
-  const handleDelete = () => {
-    setShowDeleteConfirm(true)
-  }
-
-  const confirmDelete = () => {
-    try {
-      setDeletePending(true)
-      
-      // For static site, we'll just simulate deletion and redirect
-      // In a real static site, you might want to handle this differently
-      // or remove delete functionality entirely
-      console.log("Blog deletion simulated - in static mode")
-      history.push('/')
-    } catch (error) {
-      console.error("Error deleting blog:", error)
-      alert('Error deleting blog. Please try again.')
-      setShowDeleteConfirm(false)
-    } finally {
-      setDeletePending(false)
-    }
-  }
-
-  const cancelDelete = () => {
-    setShowDeleteConfirm(false)
-  }
-
-  const handleEdit = () => {
-    // For static site, you might want to disable editing
-    // or handle it differently
-    console.log("Edit functionality disabled in static mode")
-    // history.push(`/edit/${id}`)
-    alert('Edit functionality is not available in static mode')
-  }
 
   // Function to safely render HTML content from the blog body
   const renderBlogBody = (body) => {
