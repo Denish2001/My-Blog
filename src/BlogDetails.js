@@ -1,204 +1,220 @@
-import React, { useState, useEffect } from 'react'
-import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
-import './CSS/blogdetails.css'
-
-// Import the db.json directly
-import blogData from './server/db.json'
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import "./CSS/blogdetails.css";
+import blogData from "./server/db.json";
 
 const BlogDetails = () => {
-  const history = useHistory()
-  const { id } = useParams()
-  const [blog, setBlog] = useState(null)
-  const [isPending, setIsPending] = useState(true)
-  const [error, setError] = useState(null)
-  
-  
+  const history = useHistory();
+  const { id } = useParams();
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    loadBlog()
-  }, [id])
+    loadBlog();
+  }, [id]);
 
   const loadBlog = () => {
     try {
-      setIsPending(true)
-      
-      // Find the blog by ID in the local data - compare as strings
-      const foundBlog = blogData.blogs.find(blog => blog.id === id)
-      
+      setLoading(true);
+
+      // Find the blog by ID
+      const foundBlog = blogData.blogs.find((blog) => blog.id === id);
+
       if (!foundBlog) {
-        throw new Error('Blog not found')
+        throw new Error("Story not found");
       }
 
-      setBlog(foundBlog)
-      setError(null)
+      setBlog(foundBlog);
     } catch (err) {
-      console.error('Error loading blog:', err)
-      setError(err.message)
+      console.error("Error loading blog:", err);
     } finally {
-      setIsPending(false)
+      setLoading(false);
     }
-  }
+  };
 
+  // Simple icon components
+  const Icon = ({ type }) => (
+    <svg viewBox="0 0 24 24" className={`icon icon-${type}`}>
+      {type === "arrow" && <path d="M19 12H5M12 19l-7-7 7-7" />}
+      {type === "calendar" && (
+        <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      )}
+      {type === "user" && (
+        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      )}
+      {type === "clock" && (
+        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      )}
+      {type === "loading" && (
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="none"
+        />
+      )}
+      {type === "error" && (
+        <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      )}
+    </svg>
+  );
 
-  // Function to safely render HTML content from the blog body
-  const renderBlogBody = (body) => {
-    if (typeof body === 'string' && body.includes('<br>')) {
-      return <div dangerouslySetInnerHTML={{ __html: body }} />
-    }
-    return <div style={{whiteSpace: 'pre-wrap', lineHeight: '1.6'}}>{body}</div>
-  }
+  // Format date function
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
-  // Everyday object icons (keep the same)
-  const Icons = {
-    Edit: () => (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.3639 3.65194L15.6568 2.35905C16.0474 1.96852 16.6805 1.96852 17.0711 2.35905L17.9497 3.23768C18.3403 3.6282 18.3403 4.26137 17.9497 4.65189L16.6568 5.94478M14.3639 3.65194L4.74742 13.2684C4.55889 13.4569 4.45359 13.7135 4.45547 13.9809L4.464 15.3925C4.46588 15.7874 4.78659 16.1081 5.18147 16.11L6.59305 16.1185C6.86042 16.1204 7.11705 16.0151 7.30558 15.8266L16.9221 6.21009C17.3126 5.81957 17.3126 5.1864 16.9221 4.79588L16.0435 3.91725C15.6529 3.52672 15.0198 3.52672 14.6292 3.91725L14.3639 3.65194Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M13 5L15 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M3 17H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    Delete: () => (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 7H15V15C15 16.1046 14.1046 17 13 17H7C5.89543 17 5 16.1046 5 15V7Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M8 6V4C8 3.44772 8.44772 3 9 3H11C11.5523 3 12 3.44772 12 4V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M3 7H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M9 10V13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M11 10V13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    Warning: () => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 9V13M12 17H12.01M5.07183 19H18.9282C20.4678 19 21.4301 17.3333 20.6603 16L13.7321 4C12.9623 2.66667 11.0377 2.66667 10.2679 4L3.33975 16C2.56995 17.3333 3.53223 19 5.07183 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    Loading: () => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2V6M12 18V22M6 12H2M22 12H18M19.0784 19.0784L16.25 16.25M19.0784 4.99994L16.25 7.82837M4.92157 19.0784L7.75 16.25M4.92157 4.99994L7.75 7.82837" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    Home: () => (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 10L10 3L17 10M5.5 9.5V16.5C5.5 17.0523 5.94772 17.5 6.5 17.5H9.5V13.5C9.5 12.9477 9.94772 12.5 10.5 12.5H11.5C12.0523 12.5 12.5 12.9477 12.5 13.5V17.5H15.5C16.0523 17.5 16.5 17.0523 16.5 16.5V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    Calendar: () => (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="12" height="11" rx="1" stroke="currentColor" strokeWidth="1.2"/>
-        <path d="M2 6H14" stroke="currentColor" strokeWidth="1.2"/>
-        <path d="M5 1V3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-        <path d="M11 1V3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-        <rect x="4" y="8" width="1" height="1" rx="0.5" fill="currentColor"/>
-        <rect x="7" y="8" width="1" height="1" rx="0.5" fill="currentColor"/>
-        <rect x="10" y="8" width="1" height="1" rx="0.5" fill="currentColor"/>
-        <rect x="4" y="11" width="1" height="1" rx="0.5" fill="currentColor"/>
-        <rect x="7" y="11" width="1" height="1" rx="0.5" fill="currentColor"/>
-        <rect x="10" y="11" width="1" height="1" rx="0.5" fill="currentColor"/>
-      </svg>
-    ),
-    User: () => (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="8" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.2"/>
-        <path d="M13 15C13 11.6863 10.7614 9 8 9C5.23858 9 3 11.6863 3 15" stroke="currentColor" strokeWidth="1.2"/>
-      </svg>
-    )
-  }
+  // Calculate reading time
+  const getReadingTime = (body) => {
+    if (!body) return "1 min";
+    const wordCount = body.split(/\s+/).length;
+    const readingTime = Math.ceil(wordCount / 200);
+    return `${readingTime} min read`;
+  };
 
   return (
-    <div className='blog-details-container'>
-      {isPending && (
-        <div className="blog-details-loading">
-          <div className="blog-details-loading-spinner">
-            <Icons.Loading />
-          </div>
-          <p className="blog-details-loading-text">Loading story...</p>
+    <div className="blog-details">
+      {/* Back Navigation */}
+      <div className="blog-nav">
+        <button onClick={() => history.goBack()} className="back-button">
+          <Icon type="arrow" />
+          Back
+        </button>
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="loading-state">
+          <Icon type="loading" />
+          <p>Loading story...</p>
         </div>
       )}
-      
-      {error && (
-        <div className="blog-details-error">
-          <div className="blog-details-error-icon">
-            <Icons.Warning />
-          </div>
-          <div className="blog-details-error-content">
-            <h3 className="blog-details-error-title">Oops! Something went wrong</h3>
-            <p className="blog-details-error-message">{error}</p>
-          </div>
-          <button 
-            onClick={() => history.push('/')}
-            className="blog-details-btn-primary"
-          >
-            <Icons.Home />
-            Back to Home
+
+      {/* Error State */}
+      {!loading && !blog && (
+        <div className="error-state">
+          <Icon type="error" />
+          <h3>Story not found</h3>
+          <p>The story you're looking for doesn't exist or has been removed.</p>
+          <button onClick={() => history.push("/")} className="primary-button">
+            Return home
           </button>
         </div>
       )}
-      
-      {blog && (
-        <article className="blog-details-article">
-          {/* Blog Image */}
-          {blog.imageUrl && (
-            <div className="blog-details-image">
-              <img 
-                src={blog.imageUrl} 
-                alt={blog.title}
-                className="blog-details-image-content"
-              />
-            </div>
-          )}
 
-          <div className="blog-details-header">
-            <div className="blog-details-meta">
-              <span className="blog-details-author">
-                <Icons.User />
-                By {blog.author}
-              </span>
-              <span className="blog-details-separator">•</span>
-              <span className="blog-details-date">
-                <Icons.Calendar />
-                {blog.date || new Date(blog.timestamp).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </span>
-            </div>
-            
-            <h1 className="blog-details-title">{blog.title}</h1>
-
-            {(blog.categories && blog.categories.length > 0) && (
-              <div className="blog-details-categories">
-                {blog.categories.map(category => (
-                  <span key={category} className="blog-details-category-tag">
+      {/* Blog Content */}
+      {!loading && blog && (
+        <article className="blog-article">
+          {/* Header */}
+          <header className="blog-header">
+            {/* Categories */}
+            {blog.categories && blog.categories.length > 0 && (
+              <div className="blog-categories">
+                {blog.categories.map((category, index) => (
+                  <span key={index} className="category-tag">
                     {category}
                   </span>
                 ))}
               </div>
             )}
+
+            {/* Title */}
+            <h1 className="blog-title">{blog.title}</h1>
+
+            {/* Meta Information */}
+            <div className="blog-meta">
+              <div className="meta-item">
+                <Icon type="user" />
+                <span>{blog.author}</span>
+              </div>
+
+              <div className="meta-item">
+                <Icon type="calendar" />
+                <span>{formatDate(blog.timestamp)}</span>
+              </div>
+
+              <div className="meta-item">
+                <Icon type="clock" />
+                <span>{getReadingTime(blog.body)}</span>
+              </div>
+            </div>
+
+            {/* Featured Image */}
+            {blog.imageUrl && (
+              <div className="blog-image">
+                <img
+                  src={blog.imageUrl}
+                  alt={blog.title}
+                  className="image-content"
+                  loading="lazy"
+                />
+              </div>
+            )}
+          </header>
+
+          {/* Content */}
+          <div className="blog-content">
+            {typeof blog.body === "string" && blog.body.includes("<br>") ? (
+              <div
+                className="blog-body-html"
+                dangerouslySetInnerHTML={{ __html: blog.body }}
+              />
+            ) : (
+              <div className="blog-body-text">{blog.body}</div>
+            )}
           </div>
 
-          <div className="blog-details-content">
-            {renderBlogBody(blog.body)}
-          </div>
-
-          {(blog.tags && blog.tags.length > 0) && (
-            <div className="blog-details-tags">
-              <strong className="blog-details-tags-label">Tags: </strong>
-              <div className="blog-details-tags-list">
-                {blog.tags.map(tag => (
-                  <span key={tag} className="blog-details-tag">
-                    #{tag}
+          {/* Tags */}
+          {blog.tags && blog.tags.length > 0 && (
+            <div className="blog-tags">
+              <div className="tags-label">Topics:</div>
+              <div className="tags-list">
+                {blog.tags.map((tag, index) => (
+                  <span key={index} className="tag">
+                    {tag}
                   </span>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Remove or disable actions for static site */}
-          
+          {/* Author Footer */}
+          <div className="author-footer">
+            <div className="author-info">
+              <h4>About the author</h4>
+              <p>
+                {blog.author} is a member of the KIMC Postgraduate Mass
+                Communication Class of 2025, specializing in
+                {blog.categories && blog.categories[0]
+                  ? ` ${blog.categories[0].toLowerCase()}`
+                  : " media studies"}
+                .
+              </p>
+            </div>
+          </div>
+
+          {/* Related Content Link */}
+          <div className="related-content">
+            <p>Explore more stories from our class</p>
+            <button
+              onClick={() => history.push("/AllStories")}
+              className="secondary-button"
+            >
+              View all stories
+            </button>
+          </div>
         </article>
       )}
-
     </div>
-  )
-}
+  );
+};
 
-export default BlogDetails
+export default BlogDetails;

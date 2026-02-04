@@ -1,316 +1,310 @@
-import BlogList from "./bloglist";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import db from "./server/db.json";
-import { useState, useEffect } from 'react';
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import './CSS/home.css';
+import "./CSS/home.css";
 
 const Home = () => {
-    const [blogs, setBlogs] = useState([]);
-    const [filteredBlogs, setFilteredBlogs] = useState([]);
-    const [isPending, setIsPending] = useState(true);
-    const [error, setError] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [sortBy, setSortBy] = useState('latest');
+  const [featuredStories, setFeaturedStories] = useState([]);
+  const [recentStories, setRecentStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFeature, setActiveFeature] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
 
-    // Define available categories - Gestalt: Similarity in organization
-    const categories = [
-        'all', 'crime', 'tragedy', 'politics', 'science', 'sport', 'international',
-        'technology', 'business', 'personal', 'history', 'health', 'human interest', 'education', 'other'
-    ];
+  // Format date function
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
 
-    // Format date function - moved inside component
-    const formatDate = (timestamp) => {
-        if (!timestamp) return 'Unknown date';
-        const date = new Date(timestamp);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  useEffect(() => {
+    loadStories();
+
+    // Parallax scroll effect
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
     };
 
-    useEffect(() => {
-        loadBlogs();
-    }, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    useEffect(() => {
-        filterAndSortBlogs();
-    }, [blogs, selectedCategory, sortBy]);
+  useEffect(() => {
+    // Auto-rotate featured stories
+    const interval = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % featuredStories.length);
+    }, 6000);
 
-    const loadBlogs = () => {
-        try {
-            // Use only db.json data for static site
-            const dbBlogs = (db.blogs || []).map(blog => ({
-                ...blog,
-                // Ensure consistent structure
-                id: parseInt(blog.id) || Date.now() + Math.random(),
-                timestamp: blog.timestamp || blog.id || Date.now(),
-                categories: blog.categories || ['personal'],
-                tags: blog.tags || []
-            }));
+    return () => clearInterval(interval);
+  }, [featuredStories.length]);
 
-            setBlogs(dbBlogs);
-            setIsPending(false);
-        } catch (err) {
-            console.error('Error loading blogs:', err);
-            setError('Failed to load blogs');
-            setIsPending(false);
-        }
-    };
+  const loadStories = () => {
+    try {
+      setTimeout(() => {
+        const dbBlogs = (db.blogs || []).map((blog) => ({
+          ...blog,
+          id: parseInt(blog.id) || Date.now() + Math.random(),
+          timestamp: blog.timestamp || blog.id || Date.now(),
+          categories: blog.categories || ["personal"],
+        }));
 
-    const filterAndSortBlogs = () => {
-        let filtered = [...blogs];
-
-        // Filter by category
-        if (selectedCategory !== 'all') {
-            filtered = filtered.filter(blog => 
-                blog.categories && 
-                blog.categories.map(cat => cat.toLowerCase()).includes(selectedCategory.toLowerCase())
-            );
-        }
-
-        // Sort blogs
-        filtered.sort((a, b) => {
-            const timeA = a.timestamp || a.id;
-            const timeB = b.timestamp || b.id;
-            
-            switch (sortBy) {
-                case 'latest':
-                    return timeB - timeA;
-                case 'oldest':
-                    return timeA - timeB;
-                case 'title':
-                    return (a.title || '').localeCompare(b.title || '');
-                default:
-                    return timeB - timeA;
-            }
+        const sortedBlogs = [...dbBlogs].sort((a, b) => {
+          const timeA = a.timestamp || a.id;
+          const timeB = b.timestamp || b.id;
+          return timeB - timeA;
         });
 
-        setFilteredBlogs(filtered);
-    };
+        setFeaturedStories(sortedBlogs.slice(0, 5));
+        setRecentStories(sortedBlogs.slice(5, 14));
+        setLoading(false);
+      }, 500);
+    } catch (err) {
+      console.error("Error loading stories:", err);
+      setLoading(false);
+    }
+  };
 
-    const handleCategorySelect = (category) => {
-        setSelectedCategory(category);
-    };
+  const Icon = ({ type }) => (
+    <svg
+      viewBox="0 0 24 24"
+      className={`icon icon-${type}`}
+      fill="currentColor"
+    >
+      {type === "story" && (
+        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+      )}
+      {type === "arrow" && (
+        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+      )}
+      {type === "circle" && (
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          strokeWidth="0.5"
+          fill="none"
+          stroke="currentColor"
+        />
+      )}
+    </svg>
+  );
 
-    const handleSortChange = (e) => {
-        setSortBy(e.target.value);
-    };
-
-    return ( 
-        <div className="home-container">
-            {/* Main Content Area */}
-            <div className="home-content">
-
-                 {/* Featured Stories Section */}
-                {!isPending && !error && filteredBlogs.length > 0 && (
-                    <section className="home-featured-stories">
-                        <div className="home-section-header">
-                            <h2 className="home-section-title">Our Featured Stories</h2>
-                        </div>
-                        
-                        <div className="home-featured-grid">
-                            {/* Main Featured Story - Gestalt: Figure/Ground emphasis */}
-                            {filteredBlogs[0] && (
-                                <article className="home-featured-card home-main-featured" style={{animationDelay: '0.1s'}}>
-                                    <Link to={`/blogs/${filteredBlogs[0].id}`} className="home-featured-link">
-                                        <div className="home-featured-image">
-                                            <div className="home-image-placeholder">
-                                                {filteredBlogs[0].imageUrl ? (
-                                                    <img 
-                                                        src={filteredBlogs[0].imageUrl} 
-                                                        alt={filteredBlogs[0].title}
-                                                        className="blog-image"
-                                                    />
-                                                ) : (
-                                                    <span className="home-placeholder-icon">📖</span>
-                                                )}
-                                            </div>
-                                            <div className="home-featured-badge">Featured</div>
-                                        </div>
-                                        <div className="home-featured-content">
-                                            <div className="home-featured-meta">
-                                                <span className="home-category-tag home-featured-tag">
-                                                    {filteredBlogs[0].categories?.[0] || 'Featured'}
-                                                </span>
-                                                <span className="home-reading-time">5 min read</span>
-                                            </div>
-                                            <h3 className="home-featured-title">{filteredBlogs[0].title}</h3>
-                                            <p className="home-featured-excerpt">
-                                                {filteredBlogs[0].body && filteredBlogs[0].body.length > 120 
-                                                    ? `${filteredBlogs[0].body.substring(0, 120).replace(/<br\s*\/?>/g, ' ')}...`
-                                                    : filteredBlogs[0].body?.replace(/<br\s*\/?>/g, ' ')
-                                                }
-                                            </p>
-                                            <div className="home-featured-author">
-                                                <span className="home-author-name">By {filteredBlogs[0].author}</span>
-                                                <span className="home-publish-date">
-                                                    {formatDate(filteredBlogs[0].timestamp || filteredBlogs[0].id)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                </article>
-                            )}
-                            
-                            {/* Secondary Featured Stories - Gestalt: Similarity & Proximity */}
-                            <div className="home-secondary-featured">
-                                {filteredBlogs.slice(1, 3).map((blog, index) => (
-                                    <article key={blog.id} className="home-featured-card home-secondary" style={{animationDelay: `${0.2 + index * 0.1}s`}}>
-                                        <Link to={`/blogs/${blog.id}`} className="home-featured-link">
-                                            <div className="home-featured-image">
-                                                <div className="home-image-placeholder home-small">
-                                                    {blog.imageUrl ? (
-                                                        <img 
-                                                            src={blog.imageUrl}
-                                                            alt={blog.title}
-                                                            className="home-featured-image"
-                                                        />
-                                                    ) : (
-                                                        <span className="home-placeholder-icon">📖</span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="home-featured-content">
-                                                <div className="home-featured-meta">
-                                                    <span className="home-category-tag">
-                                                        {blog.categories?.[0] || 'Story'}
-                                                    </span>
-                                                </div>
-                                                <h3 className="home-featured-title">{blog.title}</h3>
-                                                <div className="home-featured-author">
-                                                    <span className="home-author-name">By {blog.author}</span>
-                                                    <span className="home-publish-date">
-                                                        {formatDate(blog.timestamp || blog.id)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </article>
-                                ))}
-                            </div>
-                        </div>
-                        
-                        {/* View All Link - Don Norman: Clear affordance */}
-                        <div className="home-featured-footer">
-                            <Link to="/AllStories" className="home-view-all-link">
-                                <span>View All Stories</span>
-                                <span className="home-link-arrow">→</span>
-                            </Link>
-                        </div>
-                    </section>
-                )}
-
-                {/* Controls Section - Gestalt: Proximity & Grouping */}
-                <section className="home-controls-section">
-                    <div className="home-controls-header">
-                        <h2 className="home-controls-title">Explore Our Stories</h2>
-                        <p className="home-controls-description">
-                            Filter by category and sort to find exactly what you're looking for
-                        </p>
+  return (
+    <div className="home-container">
+      {/* Featured Story - Full Bleed */}
+      {!loading && featuredStories.length > 0 && (
+        <section className="featured-spotlight">
+          <div className="spotlight-container">
+            {featuredStories.map((story, index) => (
+              <div
+                key={story.id}
+                className={`spotlight-slide ${index === activeFeature ? "active" : ""}`}
+              >
+                <div className="spotlight-image">
+                  {story.imageUrl ? (
+                    <img src={story.imageUrl} alt={story.title} />
+                  ) : (
+                    <div className="spotlight-placeholder">
+                      <Icon type="story" />
                     </div>
-
-                    <div className="home-controls-grid">
-                        {/* Sort Controls - Don Norman: Clear affordances */}
-                        <div className="home-control-group">
-                            <label htmlFor="home-sort-select" className="home-control-label">
-                                Sort Stories
-                            </label>
-                            <div className="home-select-wrapper">
-                                <select 
-                                    id="home-sort-select"
-                                    value={sortBy} 
-                                    onChange={handleSortChange}
-                                    className="home-sort-select"
-                                >
-                                    <option value="latest">Latest First</option>
-                                    <option value="oldest">Oldest First</option>
-                                    <option value="title">Title A-Z</option>
-                                </select>
-                                <span className="home-select-arrow">▼</span>
-                            </div>
-                        </div>
-
-                        {/* Category Filters - Gestalt: Similarity in interactive elements */}
-                        <div className="home-control-group">
-                            <h3 className="home-category-title">Browse Categories</h3>
-                            <div className="home-category-grid">
-                                {categories.map(category => (
-                                    <button
-                                        key={category}
-                                        className={`home-category-card ${selectedCategory === category ? 'home-active' : ''}`}
-                                        onClick={() => handleCategorySelect(category)}
-                                        aria-pressed={selectedCategory === category}
-                                    >
-                                        <span className="home-category-name">
-                                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                                        </span>
-                                        {selectedCategory === category && (
-                                            <span className="home-active-indicator" aria-hidden="true">
-                                                <span className="home-indicator-dot"></span>
-                                            </span>
-                                        )}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Results Info - Don Norman: Feedback */}
-                <div className="home-results-info">
-                    <div className="home-results-content">
-                        <span className="home-results-count">
-                            {filteredBlogs.length} {filteredBlogs.length === 1 ? 'story' : 'stories'}
-                        </span>
-                        {selectedCategory !== 'all' && (
-                            <>
-                                <span className="home-results-separator">in</span>
-                                <span className="home-results-category">
-                                    "{selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}"
-                                </span>
-                            </>
-                        )}
-                    </div>
+                  )}
+                  <div className="spotlight-overlay"></div>
                 </div>
 
-                {/* Content States - Gestalt: Figure/Ground for emphasis */}
-                {error && (
-                    <div className="home-error-state">
-                        <div className="home-error-content">
-                            <div className="home-error-icon">⚠️</div>
-                            <div className="home-error-text">
-                                <h3>Unable to Load Stories</h3>
-                                <p>{error}</p>
-                            </div>
-                            <button onClick={loadBlogs} className="home-btn-retry">
-                                Try Again
-                            </button>
-                        </div>
-                    </div>
-                )}
-                
-                {isPending && (
-                    <div className="home-loading-state">
-                        <div className="home-loading-content">
-                            <div className="home-loading-spinner"></div>
-                            <div className="home-loading-text">
-                                <h3>Loading Stories</h3>
-                                <p>Curating the latest content for you...</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-                
-                {!isPending && !error && (
-                    <BlogList 
-                        blogs={filteredBlogs} 
-                        title={selectedCategory === 'all' ? "All Stories" : `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Stories`}
-                    />
-                )}
-            </div>
+                <div className="spotlight-content">
+                  <div className="spotlight-meta">
+                    <span className="spotlight-category">
+                      {story.categories?.[0]}
+                    </span>
+                    <span className="spotlight-divider">—</span>
+                    <span className="spotlight-date">
+                      {formatDate(story.timestamp)}
+                    </span>
+                  </div>
+
+                  <h2 className="spotlight-title">{story.title}</h2>
+
+                  <p className="spotlight-excerpt">
+                    {story.body && story.body.length > 160
+                      ? `${story.body.substring(0, 160).replace(/<br\s*\/?>/g, " ")}...`
+                      : story.body?.replace(/<br\s*\/?>/g, " ")}
+                  </p>
+
+                  <div className="spotlight-footer">
+                    <span className="spotlight-author">By {story.author}</span>
+                    <Link to={`/blogs/${story.id}`} className="spotlight-cta">
+                      <span>Read Story</span>
+                      <Icon type="arrow" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation Dots */}
+          <div className="spotlight-nav">
+            {featuredStories.map((_, index) => (
+              <button
+                key={index}
+                className={`nav-dot ${index === activeFeature ? "active" : ""}`}
+                onClick={() => setActiveFeature(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              >
+                <Icon type="circle" />
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recent Stories Grid - Rams Modularity */}
+      <section className="recent-section">
+        <div className="section-header">
+          <div className="header-content">
+            <h2 className="section-title">Recent Stories</h2>
+            <Link to="/AllStories" className="section-link">
+              <span>View All</span>
+              <Icon type="arrow" />
+            </Link>
+          </div>
+          <div className="header-line"></div>
         </div>
-    );
-}
- 
+
+        {loading ? (
+          <div className="loading-state">
+            <div className="loading-spinner"></div>
+          </div>
+        ) : recentStories.length > 0 ? (
+          <div className="stories-grid">
+            {recentStories.map((story, index) => (
+              <Link
+                to={`/blogs/${story.id}`}
+                key={story.id}
+                className="story-card"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div className="card-image">
+                  {story.imageUrl ? (
+                    <img src={story.imageUrl} alt={story.title} />
+                  ) : (
+                    <div className="card-placeholder">
+                      <Icon type="story" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="card-content">
+                  <div className="card-meta">
+                    <span className="card-category">
+                      {story.categories?.[0]}
+                    </span>
+                    <span className="card-date">
+                      {formatDate(story.timestamp)}
+                    </span>
+                  </div>
+
+                  <h3 className="card-title">{story.title}</h3>
+
+                  <div className="card-footer">
+                    <span className="card-author">{story.author}</span>
+                  </div>
+                </div>
+
+                <div className="card-hover-indicator">
+                  <Icon type="arrow" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <p>No stories available</p>
+          </div>
+        )}
+      </section>
+
+      {/* Categories - Ive Precision */}
+      <section className="categories-section">
+        <div className="section-header">
+          <div className="header-content">
+            <h2 className="section-title">Explore Topics</h2>
+          </div>
+          <div className="header-line"></div>
+        </div>
+
+        <div className="categories-grid">
+          {[
+            { name: "Politics", count: 12, color: "#0066CC" },
+            { name: "Technology", count: 8, color: "#00A86B" },
+            { name: "Education", count: 15, color: "#FF6B35" },
+            { name: "Human Interest", count: 10, color: "#9B59B6" },
+          ].map((category, index) => (
+            <Link
+              to={`/AllStories?category=${category.name.toLowerCase()}`}
+              key={category.name}
+              className="category-card"
+              style={{
+                animationDelay: `${index * 0.1}s`,
+                "--category-color": category.color,
+              }}
+            >
+              <div className="category-header">
+                <h3 className="category-name">{category.name}</h3>
+                <Icon type="arrow" />
+              </div>
+              <div className="category-count">{category.count} Stories</div>
+              <div className="category-accent"></div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* About Preview - Da Vinci Proportion */}
+      <section className="about-section">
+        <div className="about-grid">
+          <div className="about-content">
+            <div className="about-label">Who We Are</div>
+            <h2 className="about-title">Excellence in Media & Communication</h2>
+            <p className="about-description">
+              The KIMC Postgraduate Mass Communication Class of 2025 brings
+              together aspiring media professionals committed to excellence in
+              journalism, strategic communication, and digital storytelling.
+            </p>
+            <Link to="/about" className="about-cta">
+              <span>Learn More</span>
+              <Icon type="arrow" />
+            </Link>
+          </div>
+
+          <div className="about-visual">
+            <div className="visual-grid">
+              <div className="grid-item"></div>
+              <div className="grid-item"></div>
+              <div className="grid-item"></div>
+              <div className="grid-item"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer Accent */}
+      <div className="footer-accent">
+        <div className="accent-line"></div>
+      </div>
+    </div>
+  );
+};
+
 export default Home;
