@@ -66,11 +66,10 @@ const Icon = ({ name, className = '' }) => (
 );
 
 /* ================================================================
-   SHARE HOOK — native share + copy + URL
+   SHARE HOOK
 ================================================================ */
 const useShare = (title) => {
   const [copied, setCopied] = useState(false);
-  // ✅ Check navigator.share once at mount
   const [supported] = useState(() => {
     if (typeof navigator === 'undefined') return false;
     return !!navigator.share;
@@ -90,7 +89,6 @@ const useShare = (title) => {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback for older browsers / insecure contexts
       const ta = document.createElement('textarea');
       ta.value = url;
       document.body.appendChild(ta);
@@ -110,7 +108,7 @@ const useShare = (title) => {
     try {
       await navigator.share({ title, url });
     } catch {
-      /* user cancelled — silent */
+      /* user cancelled */
     }
   };
 
@@ -248,18 +246,17 @@ const BlogDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Since this is synchronous JSON lookup, no loading state needed
+  // Compute the blog once
   const blog =
     (blogData.blogs || []).find((b) => String(b.id) === String(id)) || null;
-
   const loading = false;
 
-  // Only use effect for side effects (scrolling), not for setState
+  // Only use effect for side effect: scroll on id change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [id]);
 
-  /* Related stories — same category, excluding current */
+  /* Related stories */
   const related = useMemo(() => {
     if (!blog) return [];
     const cats = blog.categories ?? [];
@@ -326,7 +323,6 @@ const BlogDetails = () => {
     <div className="blog-details">
       <ReadingProgress />
 
-      {/* Back */}
       <div className="container blog-back">
         <button
           type="button"
@@ -338,15 +334,15 @@ const BlogDetails = () => {
         </button>
       </div>
 
-      {/* Article */}
       <article className="blog-article container">
-        {/* Category eyebrow */}
         {blog.categories?.length > 0 && (
           <div className="blog-article__eyebrow">
             {blog.categories.map((c) => (
               <Link
                 key={c}
-                to={`/AllStories?category=${encodeURIComponent(c.toLowerCase())}`}
+                to={`/AllStories?category=${encodeURIComponent(
+                  c.toLowerCase()
+                )}`}
                 className="badge"
               >
                 {c}
@@ -355,10 +351,8 @@ const BlogDetails = () => {
           </div>
         )}
 
-        {/* Title */}
         <h1 className="blog-article__title">{blog.title}</h1>
 
-        {/* Meta row */}
         <div className="blog-article__meta">
           <Link
             to={`/AllStories?author=${encodeURIComponent(blog.author)}`}
@@ -389,7 +383,6 @@ const BlogDetails = () => {
           </span>
         </div>
 
-        {/* Featured image */}
         {blog.imageUrl && (
           <figure className="blog-article__figure">
             <img
@@ -401,20 +394,16 @@ const BlogDetails = () => {
           </figure>
         )}
 
-        {/* Share bar (top) */}
         <div className="blog-article__share-top">
           <ShareBar title={blog.title} />
         </div>
 
-        {/* Body */}
         <div className="blog-article__body">{renderBody(blog.body)}</div>
 
-        {/* Share bar (bottom) */}
         <div className="blog-article__share-bottom">
           <ShareBar title={blog.title} />
         </div>
 
-        {/* Author card */}
         <aside className="author-card">
           <div className="author-card__avatar" aria-hidden="true">
             {blog.author?.charAt(0).toUpperCase() ?? '?'}
@@ -442,7 +431,6 @@ const BlogDetails = () => {
         </aside>
       </article>
 
-      {/* Related stories */}
       {related.length > 0 && (
         <section className="related container">
           <header className="section-header">

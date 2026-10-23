@@ -1,35 +1,35 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Create.css";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Create.css';
 
 const Create = () => {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [author, setAuthor] = useState("Denish Awajo");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [author, setAuthor] = useState('Denish Awajo');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState('');
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
+  const [imagePreview, setImagePreview] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const availableCategories = [
-    "Crime",
-    "Tragedy",
-    "Politics",
-    "Science",
-    "Technology",
-    "Sport",
-    "International",
-    "Business",
-    "Entertainment",
-    "History",
-    "Health",
-    "Human Interest",
-    "Education",
-    "Other",
+    'Crime',
+    'Tragedy',
+    'Politics',
+    'Science',
+    'Technology',
+    'Sport',
+    'International',
+    'Business',
+    'Entertainment',
+    'History',
+    'Health',
+    'Human Interest',
+    'Education',
+    'Other',
   ];
 
   // Everyday object icons
@@ -179,7 +179,7 @@ const Create = () => {
     setCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category],
+        : [...prev, category]
     );
   };
 
@@ -187,14 +187,14 @@ const Create = () => {
     const file = e.target.files[0];
     if (file) {
       // Validate file type
-      if (!file.type.startsWith("image/")) {
-        setError("Please upload an image file");
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload an image file');
         return;
       }
 
       // Validate file size (5MB max)
       if (file.size > 5 * 1024 * 1024) {
-        setError("Image size should be less than 5MB");
+        setError('Image size should be less than 5MB');
         return;
       }
 
@@ -216,7 +216,7 @@ const Create = () => {
 
     // Basic validation
     if (categories.length === 0) {
-      setError("Please select at least one category");
+      setError('Please select at least one category');
       return;
     }
 
@@ -225,22 +225,22 @@ const Create = () => {
     const imageUrl = imagePreview || null;
 
     // Format the date
-    const formattedDate = new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    const formattedDate = new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
 
     const blog = {
       id: Date.now().toString(),
       title,
-      body: body.replace(/\n/g, "<br>"),
+      body: body.replace(/\n/g, '<br>'),
       author,
       date: formattedDate,
       timestamp: new Date(date).getTime(),
       categories,
       tags: tags
-        .split(",")
+        .split(',')
         .map((tag) => tag.trim())
         .filter((tag) => tag),
       imageUrl,
@@ -250,25 +250,25 @@ const Create = () => {
 
     try {
       // Send POST request to JSON Server
-      const response = await fetch("http://localhost:3001/blogs", {
-        method: "POST",
+      const response = await fetch('http://localhost:3001/blogs', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(blog),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to save blog");
+        throw new Error('Failed to save blog');
       }
 
       const savedBlog = await response.json();
-      console.log("New blog saved to database:", savedBlog);
+      console.log('New blog saved to database:', savedBlog);
       setPending(false);
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      console.error("Error saving blog:", error);
-      setError("Failed to save blog. Please try again.");
+      console.error('Error saving blog:', error);
+      setError('Failed to save blog. Please try again.');
       setPending(false);
     }
   };
@@ -324,7 +324,7 @@ const Create = () => {
                     type="button"
                     onClick={() => {
                       setImage(null);
-                      setImagePreview("");
+                      setImagePreview('');
                     }}
                     className="create-remove-btn"
                   >
@@ -362,7 +362,7 @@ const Create = () => {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 className="create-form-input"
-                max={new Date().toISOString().split("T")[0]}
+                max={new Date().toISOString().split('T')[0]}
               />
             </div>
           </div>
@@ -458,7 +458,7 @@ Tips:
         <div className="create-form-actions">
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate('/')}
             className="create-btn-cancel"
             disabled={pending}
           >
@@ -467,7 +467,7 @@ Tips:
 
           <button
             type="submit"
-            className={`create-btn-submit ${pending ? "create-submitting" : ""}`}
+            className={`create-btn-submit ${pending ? 'create-submitting' : ''}`}
             disabled={pending}
           >
             {pending ? (

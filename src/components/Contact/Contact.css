@@ -103,10 +103,10 @@
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-subtle);
 }
-.input[aria-invalid="true"] {
+.input[aria-invalid='true'] {
   border-color: var(--color-danger);
 }
-.input[aria-invalid="true"]:focus {
+.input[aria-invalid='true']:focus {
   box-shadow: 0 0 0 3px rgba(179, 0, 0, 0.1);
 }
 .input--textarea {

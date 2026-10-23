@@ -175,7 +175,6 @@ const FilterChip = ({ label, onRemove }) => (
 const AllStories = () => {
   const [params, setParams] = useSearchParams();
 
-  /* URL as source of truth */
   const category = params.get('category') || 'all';
   const author = params.get('author') || '';
   const sort = SORTS.some((s) => s.value === params.get('sort'))
@@ -186,7 +185,6 @@ const AllStories = () => {
   const [query, setQuery] = useState(params.get('q') || '');
   const debouncedQuery = useDebounced(query, 200);
 
-  /* Sync query → URL */
   useEffect(() => {
     const next = new URLSearchParams(params);
     if (debouncedQuery) next.set('q', debouncedQuery);
@@ -195,18 +193,16 @@ const AllStories = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery]);
 
-  /* Load data */
-  // Compute initial state once, no effect needed
+  // Compute initial data once
   const [blogs] = useState(() => {
     try {
       return normalizeBlogs(db.blogs || []);
-    } catch (e) {
-      console.error(e); // Log the error properly
+    } catch (err) {
+      console.error('Failed to load stories:', err);
       return [];
     }
   });
 
-  // No separate loading/error needed since this is synchronous
   const loading = false;
   const error = null;
 
@@ -223,7 +219,6 @@ const AllStories = () => {
     [params, setParams]
   );
 
-  /* Filter + sort */
   const results = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase();
 
@@ -268,7 +263,6 @@ const AllStories = () => {
     searchRef.current?.focus();
   };
 
-  /* Keyboard: "/" focuses search */
   useEffect(() => {
     const onKey = (e) => {
       if (
@@ -287,9 +281,6 @@ const AllStories = () => {
 
   return (
     <div className="stories-page">
-      {/* ============================================================
-          HERO
-      ============================================================ */}
       <header className="stories-hero">
         <div className="container">
           <span className="label">Archive</span>
@@ -301,9 +292,6 @@ const AllStories = () => {
         </div>
       </header>
 
-      {/* ============================================================
-          CONTROL BAR
-      ============================================================ */}
       <section className="stories-controls" aria-label="Filter and sort">
         <div className="container">
           <div className="stories-search">
@@ -376,9 +364,6 @@ const AllStories = () => {
         </div>
       </section>
 
-      {/* ============================================================
-          CATEGORY CHIPS
-      ============================================================ */}
       <nav className="stories-categories" aria-label="Filter by category">
         <div className="container stories-categories__inner">
           {ALL_CATEGORIES.map((cat) => {
@@ -402,9 +387,6 @@ const AllStories = () => {
         </div>
       </nav>
 
-      {/* ============================================================
-          RESULTS
-      ============================================================ */}
       <section className="section stories-results">
         <div className="container">
           <div className="stories-results__head">

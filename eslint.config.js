@@ -31,6 +31,5 @@ export default [
       ],
     },
   },
-  // This must be last to turn off conflicting rules
   prettier,
 ];

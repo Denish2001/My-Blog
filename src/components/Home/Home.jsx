@@ -1,31 +1,31 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
-import db from "../../server/db.json";
-import "./Home.css";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import db from '../../server/db.json';
+import './Home.css';
 
 /* ------------------------------------------------------------------
    Utilities
 ------------------------------------------------------------------ */
-const stripHtml = (html = "") =>
+const stripHtml = (html = '') =>
   html
-    .replace(/<br\s*\/?>/g, " ")
-    .replace(/<[^>]+>/g, " ")
+    .replace(/<br\s*\/?>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
     .trim();
 
 const formatDate = (timestamp) => {
-  if (!timestamp) return "";
+  if (!timestamp) return '';
   const date = new Date(timestamp);
   const now = new Date();
   const diffDays = Math.floor((now - date) / 86_400_000);
 
-  if (diffDays <= 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
+  if (diffDays <= 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
   if (diffDays < 7) return `${diffDays} days ago`;
 
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 };
 
@@ -34,13 +34,13 @@ const formatDate = (timestamp) => {
 ------------------------------------------------------------------ */
 const ICONS = {
   story:
-    "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z",
-  arrow: "M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z",
+    'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z',
+  arrow: 'M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z',
   magazine:
-    "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z",
+    'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
 };
 
-const Icon = ({ type = "arrow", className = "" }) => (
+const Icon = ({ type = 'arrow', className = '' }) => (
   <svg
     viewBox="0 0 24 24"
     className={`icon ${className}`.trim()}
@@ -54,15 +54,14 @@ const Icon = ({ type = "arrow", className = "" }) => (
 /* ------------------------------------------------------------------
    Data
 ------------------------------------------------------------------ */
-// A palette of colors to cycle through for dynamic categories
 const CATEGORY_COLORS = [
-  "#0066CC", // Blue
-  "#00A86B", // Green
-  "#FF6B35", // Orange
-  "#9B59B6", // Purple
-  "#E74C3C", // Red
-  "#F1C40F", // Yellow
-  "#34495E", // Dark Slate
+  '#0066CC',
+  '#00A86B',
+  '#FF6B35',
+  '#9B59B6',
+  '#E74C3C',
+  '#F1C40F',
+  '#34495E',
 ];
 
 const normalizeBlogs = (blogs = []) =>
@@ -71,7 +70,7 @@ const normalizeBlogs = (blogs = []) =>
       ...blog,
       id: Number(blog.id) || blog.id,
       timestamp: blog.timestamp ?? Date.now(),
-      categories: blog.categories ?? ["personal"],
+      categories: blog.categories ?? ['personal'],
     }))
     .sort((a, b) => b.timestamp - a.timestamp);
 
@@ -79,60 +78,45 @@ const normalizeBlogs = (blogs = []) =>
    Component
 ------------------------------------------------------------------ */
 const Home = () => {
-  const [featured, setFeatured] = useState([]);
-  const [recent, setRecent] = useState([]);
-  const [allBlogs, setAllBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Compute everything once at mount
+  const [allBlogs] = useState(() => normalizeBlogs(db.blogs || []));
+  const featured = allBlogs.slice(0, 5);
+  const recent = allBlogs.slice(5, 14);
+  const loading = false;
+
   const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
-  /* --- Load stories once --- */
+  /* --- Autoplay (pauses on hover) --- */
   useEffect(() => {
-    const all = normalizeBlogs(db.blogs);
-    setAllBlogs(all);
-    setFeatured(all.slice(0, 5));
-    setRecent(all.slice(5, 14));
-    setLoading(false);
-  }, []);
-
-  /* --- Autoplay featured --- */
-  useEffect(() => {
-    if (featured.length < 2) return;
+    if (featured.length < 2 || paused) return;
     const id = setInterval(
       () => setActiveIndex((i) => (i + 1) % featured.length),
-      6000,
+      6000
     );
     return () => clearInterval(id);
-  }, [featured.length]);
-
-  /* --- Pause autoplay on hover (Norman: user control) --- */
-  const [paused, setPaused] = useState(false);
+  }, [featured.length, paused]);
 
   const goToSlide = useCallback(
     (index) => setActiveIndex(index % Math.max(featured.length, 1)),
-    [featured.length],
+    [featured.length]
   );
 
   const activeStory = featured[activeIndex];
 
-  /* --- Derived excerpt --- */
   const excerpt = useMemo(() => {
-    if (!activeStory?.body) return "";
+    if (!activeStory?.body) return '';
     const text = stripHtml(activeStory.body);
     return text.length > 180 ? `${text.slice(0, 180)}…` : text;
   }, [activeStory]);
 
-  /* ------------------------------------------------------------------
-     DYNAMIC CATEGORIES
-     Calculates the top categories based on the most frequent tags in the DB
-  ------------------------------------------------------------------ */
+  /* --- Dynamic categories --- */
   const dynamicCategories = useMemo(() => {
     if (!allBlogs.length) return [];
 
     const counts = {};
-    // Count how many times each category appears
     allBlogs.forEach((blog) => {
       blog.categories.forEach((cat) => {
-        // Keep original casing for display, but count case-insensitively
         const normalized = cat.trim().toLowerCase();
         if (!counts[normalized]) {
           counts[normalized] = { name: cat, count: 0 };
@@ -141,13 +125,11 @@ const Home = () => {
       });
     });
 
-    // Convert to array, sort by count descending, and take the top 4
     return Object.values(counts)
       .sort((a, b) => b.count - a.count)
       .slice(0, 4)
       .map((cat, index) => ({
         name: cat.name,
-        // We use the exact name for the URL to match the AllStories filter
         slug: cat.name,
         count: cat.count,
         color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
@@ -156,9 +138,7 @@ const Home = () => {
 
   return (
     <div className="home">
-      {/* ============================================================
-          FEATURED SPOTLIGHT
-      ============================================================ */}
+      {/* FEATURED SPOTLIGHT */}
       {!loading && featured.length > 0 && (
         <section
           className="spotlight"
@@ -172,7 +152,7 @@ const Home = () => {
               <article
                 key={story.id}
                 className={`spotlight__slide ${
-                  index === activeIndex ? "is-active" : ""
+                  index === activeIndex ? 'is-active' : ''
                 }`}
                 aria-hidden={index !== activeIndex}
               >
@@ -182,7 +162,7 @@ const Home = () => {
                       src={story.imageUrl}
                       alt=""
                       className="img-cover"
-                      loading={index === 0 ? "eager" : "lazy"}
+                      loading={index === 0 ? 'eager' : 'lazy'}
                     />
                   ) : (
                     <div className="placeholder placeholder--dark">
@@ -219,13 +199,12 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Slide navigation */}
           <nav className="spotlight__nav" aria-label="Slide navigation">
             {featured.map((_, index) => (
               <button
                 key={index}
                 className={`spotlight__dot ${
-                  index === activeIndex ? "is-active" : ""
+                  index === activeIndex ? 'is-active' : ''
                 }`}
                 onClick={() => goToSlide(index)}
                 aria-label={`Go to slide ${index + 1}`}
@@ -234,18 +213,15 @@ const Home = () => {
             ))}
           </nav>
 
-          {/* Slide counter — precise numeric signifier */}
           <span className="spotlight__counter" aria-hidden="true">
-            <strong>{String(activeIndex + 1).padStart(2, "0")}</strong>
+            <strong>{String(activeIndex + 1).padStart(2, '0')}</strong>
             <span>/</span>
-            <span>{String(featured.length).padStart(2, "0")}</span>
+            <span>{String(featured.length).padStart(2, '0')}</span>
           </span>
         </section>
       )}
 
-      {/* ============================================================
-          MAGAZINE FEATURE (NEW)
-      ============================================================ */}
+      {/* MAGAZINE FEATURE */}
       <section className="section magazine-feature">
         <div className="container">
           <div className="magazine-banner-feature">
@@ -268,7 +244,6 @@ const Home = () => {
                 uncertainty in equal measure. This is our voice.
               </p>
               <div className="magazine-banner-feature__actions">
-                {/* Both cover and button go to the SAME internal page */}
                 <Link to="/Magazine" className="btn btn--primary">
                   <Icon type="magazine" />
                   <span>Read the Magazine</span>
@@ -279,9 +254,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ============================================================
-          RECENT STORIES
-      ============================================================ */}
+      {/* RECENT STORIES */}
       <section className="section">
         <header className="section-header">
           <div className="section-header__row">
@@ -294,11 +267,7 @@ const Home = () => {
           <div className="section-header__line" />
         </header>
 
-        {loading ? (
-          <div className="loading-state">
-            <div className="loading-spinner" />
-          </div>
-        ) : recent.length > 0 ? (
+        {recent.length > 0 ? (
           <div className="grid grid--cards">
             {recent.map((story, index) => (
               <Link
@@ -351,9 +320,7 @@ const Home = () => {
         )}
       </section>
 
-      {/* ============================================================
-          CATEGORIES (DYNAMIC)
-      ============================================================ */}
+      {/* CATEGORIES */}
       <section className="section categories">
         <header className="section-header">
           <div className="section-header__row">
@@ -363,14 +330,13 @@ const Home = () => {
         </header>
 
         <div className="grid grid--tiles categories__grid">
-          {/* Map over the dynamically calculated categories */}
           {dynamicCategories.map((cat, index) => (
             <Link
               to={`/AllStories?category=${encodeURIComponent(cat.slug)}`}
               key={cat.slug}
               className="category"
               style={{
-                "--category-color": cat.color,
+                '--category-color': cat.color,
                 animationDelay: `${index * 0.08}s`,
               }}
             >
@@ -385,9 +351,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ============================================================
-          ABOUT
-      ============================================================ */}
+      {/* ABOUT */}
       <section className="section about">
         <div className="grid grid--golden about__grid">
           <div className="about__content">

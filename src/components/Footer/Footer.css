@@ -228,7 +228,7 @@
 .footer-news__input::placeholder {
   color: rgba(255, 255, 255, 0.35);
 }
-.footer-news__input[aria-invalid="true"] {
+.footer-news__input[aria-invalid='true'] {
   color: #ffb3b3;
 }
 

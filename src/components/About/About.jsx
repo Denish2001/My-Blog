@@ -1,25 +1,25 @@
-import { Link } from "react-router-dom";
-import "./About.css";
+import { Link } from 'react-router-dom';
+import './About.css';
 
 /* ------------------------------------------------------------------
    Icons — one map, one component
 ------------------------------------------------------------------ */
 const ICONS = {
   media:
-    "M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z",
+    'M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z',
   research:
-    "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z",
+    'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
   innovation:
-    "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.49L17.5 6.5 9.99 9.99 6.5 17.5zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1z",
+    'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.49L17.5 6.5 9.99 9.99 6.5 17.5zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1z',
   community:
-    "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z",
-  arrow: "M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z",
+    'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+  arrow: 'M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z',
   clock:
-    "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z",
-  cap: "M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z",
+    'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z',
+  cap: 'M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z',
 };
 
-const Icon = ({ name, className = "" }) => (
+const Icon = ({ name, className = '' }) => (
   <svg
     viewBox="0 0 24 24"
     className={`icon ${className}`.trim()}
@@ -34,72 +34,72 @@ const Icon = ({ name, className = "" }) => (
    Content — data separated from markup
 ------------------------------------------------------------------ */
 const HIGHLIGHTS = [
-  { icon: "media", label: "Professional Development" },
-  { icon: "research", label: "Academic Excellence" },
-  { icon: "innovation", label: "Digital Innovation" },
-  { icon: "community", label: "Industry Impact" },
+  { icon: 'media', label: 'Professional Development' },
+  { icon: 'research', label: 'Academic Excellence' },
+  { icon: 'innovation', label: 'Digital Innovation' },
+  { icon: 'community', label: 'Industry Impact' },
 ];
 
 const MODULES = [
   {
-    module: "Media Theory",
-    focus: "Critical analysis of communication models",
+    module: 'Media Theory',
+    focus: 'Critical analysis of communication models',
   },
-  { module: "Digital Journalism", focus: "Multimedia storytelling techniques" },
+  { module: 'Digital Journalism', focus: 'Multimedia storytelling techniques' },
   {
-    module: "Strategic Communication",
-    focus: "PR, advertising and campaign planning",
+    module: 'Strategic Communication',
+    focus: 'PR, advertising and campaign planning',
   },
   {
-    module: "Research Methods",
-    focus: "Media analytics and audience research",
+    module: 'Research Methods',
+    focus: 'Media analytics and audience research',
   },
 ];
 
 const FEATURES = [
   {
-    icon: "innovation",
-    title: "Media Innovation",
+    icon: 'innovation',
+    title: 'Media Innovation',
     description:
-      "Exploring new frontiers in digital storytelling and communication.",
+      'Exploring new frontiers in digital storytelling and communication.',
   },
   {
-    icon: "research",
-    title: "Research Excellence",
-    description: "Academic rigor combined with practical media applications.",
+    icon: 'research',
+    title: 'Research Excellence',
+    description: 'Academic rigor combined with practical media applications.',
   },
   {
-    icon: "community",
-    title: "Industry Connections",
-    description: "Bridging academic learning with real-world media practice.",
+    icon: 'community',
+    title: 'Industry Connections',
+    description: 'Bridging academic learning with real-world media practice.',
   },
   {
-    icon: "media",
-    title: "Digital First",
-    description: "Mastering modern communication tools and platforms.",
+    icon: 'media',
+    title: 'Digital First',
+    description: 'Mastering modern communication tools and platforms.',
   },
 ];
 
 const VALUES = [
   {
-    number: "01",
-    title: "Integrity",
-    description: "Ethical communication and responsible journalism.",
+    number: '01',
+    title: 'Integrity',
+    description: 'Ethical communication and responsible journalism.',
   },
   {
-    number: "02",
-    title: "Collaboration",
-    description: "Teamwork across diverse media disciplines.",
+    number: '02',
+    title: 'Collaboration',
+    description: 'Teamwork across diverse media disciplines.',
   },
   {
-    number: "03",
-    title: "Innovation",
-    description: "Creative approaches to media challenges.",
+    number: '03',
+    title: 'Innovation',
+    description: 'Creative approaches to media challenges.',
   },
   {
-    number: "04",
-    title: "Excellence",
-    description: "Commitment to quality in all our work.",
+    number: '04',
+    title: 'Excellence',
+    description: 'Commitment to quality in all our work.',
   },
 ];
 
@@ -245,7 +245,7 @@ const About = () => {
             {MODULES.map((m, i) => (
               <li key={m.module} className="about-modules__item">
                 <span className="about-modules__number">
-                  {String(i + 1).padStart(2, "0")}
+                  {String(i + 1).padStart(2, '0')}
                 </span>
                 <div className="about-modules__body">
                   <h3 className="about-modules__name">{m.module}</h3>

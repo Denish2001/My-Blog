@@ -1,31 +1,31 @@
-import { Link } from "react-router-dom";
-import blogData from "../../server/db.json";
-import "./Bloglist.css";
+import { Link } from 'react-router-dom';
+import blogData from '../../server/db.json';
+import './Bloglist.css';
 
 /* ================================================================
    UTILITIES
 ================================================================ */
-const stripHtml = (html = "") =>
+const stripHtml = (html = '') =>
   html
-    .replace(/<br\s*\/?>/gi, " ")
-    .replace(/<[^>]+>/g, " ")
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
     .trim();
 
 const truncate = (text, n = 140) =>
   text.length > n ? `${text.slice(0, n).trimEnd()}…` : text;
 
 const formatDate = (timestamp) => {
-  if (!timestamp) return "";
+  if (!timestamp) return '';
   const d = new Date(timestamp);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 };
 
-const readingTime = (body = "") => {
+const readingTime = (body = '') => {
   const words = stripHtml(body).split(/\s+/).filter(Boolean).length;
   return `${Math.max(1, Math.ceil(words / 200))} min read`;
 };
@@ -35,7 +35,7 @@ const normalize = (blogs = []) =>
     ...b,
     id: Number(b.id) || b.id,
     timestamp: b.timestamp ?? Date.now(),
-    categories: b.categories?.length ? b.categories : ["uncategorized"],
+    categories: b.categories?.length ? b.categories : ['uncategorized'],
   }));
 
 const BLOGS = normalize(blogData.blogs || []);
@@ -45,13 +45,13 @@ const BLOGS = normalize(blogData.blogs || []);
 ================================================================ */
 const ICONS = {
   story:
-    "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z",
-  arrow: "M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z",
+    'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z',
+  arrow: 'M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z',
   clock:
-    "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z",
+    'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z',
 };
 
-const Icon = ({ name, className = "" }) => (
+const Icon = ({ name, className = '' }) => (
   <svg
     viewBox="0 0 24 24"
     className={`icon ${className}`.trim()}
@@ -66,7 +66,7 @@ const Icon = ({ name, className = "" }) => (
    CARD
 ================================================================ */
 const BlogCard = ({ blog, index }) => {
-  const excerpt = truncate(stripHtml(blog.body || ""), 140);
+  const excerpt = truncate(stripHtml(blog.body || ''), 140);
 
   return (
     <article
@@ -128,7 +128,7 @@ const BlogCard = ({ blog, index }) => {
 /* ================================================================
    LIST
 ================================================================ */
-const BlogList = ({ title = "Latest Stories" }) => {
+const BlogList = ({ title = 'Latest Stories' }) => {
   if (BLOGS.length === 0) {
     return (
       <section className="blog-list">

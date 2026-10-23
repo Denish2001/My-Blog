@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import "./CustomCursor.css";
+import { useEffect, useRef, useState } from 'react';
+import './CustomCursor.css';
 
 /* ----------------------------------------------------------------
    Detect a capable device ONCE, before render.
@@ -7,14 +7,14 @@ import "./CustomCursor.css";
    see this. Touch-only devices skip entirely.
 ---------------------------------------------------------------- */
 const supportsFinePointer = () => {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia?.("(pointer: fine)").matches ?? false;
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia?.('(pointer: fine)').matches ?? false;
 };
 
 const prefersReducedMotion = () => {
-  if (typeof window === "undefined") return false;
+  if (typeof window === 'undefined') return false;
   return (
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
   );
 };
 
@@ -23,16 +23,16 @@ const prefersReducedMotion = () => {
    One selector string — one query — no per-element listeners.
 ---------------------------------------------------------------- */
 const INTERACTIVE_SELECTOR = [
-  "a[href]",
-  "button:not([disabled])",
+  'a[href]',
+  'button:not([disabled])',
   '[role="button"]',
-  "input:not([disabled])",
-  "textarea:not([disabled])",
-  "select:not([disabled])",
-  "label[for]",
-  "summary",
+  'input:not([disabled])',
+  'textarea:not([disabled])',
+  'select:not([disabled])',
+  'label[for]',
+  'summary',
   '[tabindex]:not([tabindex="-1"])',
-].join(",");
+].join(',');
 
 const CustomCursor = () => {
   const cursorRef = useRef(null);
@@ -51,19 +51,19 @@ const CustomCursor = () => {
         an unplugged one stops, without a reload.
   -------------------------------------------------------------- */
   useEffect(() => {
-    const media = window.matchMedia("(pointer: fine)");
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const media = window.matchMedia('(pointer: fine)');
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const refresh = () => {
       setEnabled(supportsFinePointer() && !prefersReducedMotion());
     };
 
     refresh();
-    media.addEventListener?.("change", refresh);
-    motion.addEventListener?.("change", refresh);
+    media.addEventListener?.('change', refresh);
+    motion.addEventListener?.('change', refresh);
     return () => {
-      media.removeEventListener?.("change", refresh);
-      motion.removeEventListener?.("change", refresh);
+      media.removeEventListener?.('change', refresh);
+      motion.removeEventListener?.('change', refresh);
     };
   }, []);
 
@@ -72,13 +72,13 @@ const CustomCursor = () => {
   -------------------------------------------------------------- */
   useEffect(() => {
     if (!enabled) {
-      document.body.classList.remove("has-custom-cursor");
+      document.body.classList.remove('has-custom-cursor');
       return;
     }
 
     /* Hide native cursor only when the custom one is active.
        A class on <body> scopes this rule to real use. */
-    document.body.classList.add("has-custom-cursor");
+    document.body.classList.add('has-custom-cursor');
 
     /* ---- Mouse move: capture target; RAF loop interpolates ---- */
     const onMove = (e) => {
@@ -118,22 +118,22 @@ const CustomCursor = () => {
     };
     rafRef.current = requestAnimationFrame(tick);
 
-    document.addEventListener("mousemove", onMove, { passive: true });
-    document.addEventListener("mouseover", onOver, { passive: true });
-    document.addEventListener("mousedown", onDown, { passive: true });
-    document.addEventListener("mouseup", onUp, { passive: true });
-    document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("mouseenter", onEnter);
+    document.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('mouseover', onOver, { passive: true });
+    document.addEventListener('mousedown', onDown, { passive: true });
+    document.addEventListener('mouseup', onUp, { passive: true });
+    document.addEventListener('mouseleave', onLeave);
+    document.addEventListener('mouseenter', onEnter);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseover", onOver);
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("mouseup", onUp);
-      document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("mouseenter", onEnter);
-      document.body.classList.remove("has-custom-cursor");
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseover', onOver);
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('mouseleave', onLeave);
+      document.removeEventListener('mouseenter', onEnter);
+      document.body.classList.remove('has-custom-cursor');
     };
   }, [enabled, isVisible]);
 
@@ -143,13 +143,13 @@ const CustomCursor = () => {
     <div
       ref={cursorRef}
       className={[
-        "cursor",
-        isHovering ? "cursor--hover" : "",
-        isPressed ? "cursor--pressed" : "",
-        isVisible ? "cursor--visible" : "",
+        'cursor',
+        isHovering ? 'cursor--hover' : '',
+        isPressed ? 'cursor--pressed' : '',
+        isVisible ? 'cursor--visible' : '',
       ]
         .filter(Boolean)
-        .join(" ")}
+        .join(' ')}
       aria-hidden="true"
     >
       <span className="cursor__dot" />

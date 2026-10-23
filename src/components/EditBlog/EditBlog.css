@@ -398,8 +398,12 @@
 }
 
 @keyframes edit-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .edit-btn-text {
@@ -439,24 +443,24 @@
   .edit-container {
     padding: 1rem;
   }
-  
+
   .edit-form-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .edit-title {
     font-size: 2rem;
   }
-  
+
   .edit-categories-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
-  
+
   .edit-form-actions {
     flex-direction: column-reverse;
   }
-  
+
   .edit-btn-cancel,
   .edit-btn-submit {
     width: 100%;
@@ -469,7 +473,7 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .edit-upload-btn,
   .edit-remove-btn {
     justify-content: center;

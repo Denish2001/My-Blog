@@ -542,7 +542,7 @@
 
 /* The book spine */
 .magazine-banner-feature__cover::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 0;

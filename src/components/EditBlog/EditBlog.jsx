@@ -1,70 +1,42 @@
-import { useState, useEffect } from "react";
-
-import { useNavigate, useParams } from "react-router-dom";
-
-import "./EditBlog.css";
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import './EditBlog.css';
 
 const EditBlog = () => {
-  const [title, setTitle] = useState("");
-
-  const [body, setBody] = useState("");
-
-  const [author, setAuthor] = useState("Denish Awajo");
-
-  const [date, setDate] = useState("");
-
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [author, setAuthor] = useState('Denish Awajo');
+  const [date, setDate] = useState('');
   const [categories, setCategories] = useState([]);
-
-  const [tags, setTags] = useState("");
-
+  const [tags, setTags] = useState('');
   const [image, setImage] = useState(null);
-
-  const [imagePreview, setImagePreview] = useState("");
-
-  const [existingImageUrl, setExistingImageUrl] = useState("");
-
+  const [imagePreview, setImagePreview] = useState('');
+  const [existingImageUrl, setExistingImageUrl] = useState('');
   const [pending, setPending] = useState(false);
-
   const [error, setError] = useState(null);
-
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   const availableCategories = [
-    "Crime",
-
-    "Tragedy",
-
-    "Politics",
-
-    "Science",
-
-    "Technology",
-
-    "Sport",
-
-    "International",
-
-    "Business",
-
-    "Entertainment",
-
-    "History",
-
-    "Health",
-
-    "Human Interest",
-
-    "Education",
-
-    "Other",
+    'Crime',
+    'Tragedy',
+    'Politics',
+    'Science',
+    'Technology',
+    'Sport',
+    'International',
+    'Business',
+    'Entertainment',
+    'History',
+    'Health',
+    'Human Interest',
+    'Education',
+    'Other',
   ];
 
-  // Minimalist icons with pink accents
-
+  /* ---- Icons ---- */
   const Icons = {
     Loading: () => (
       <svg
@@ -83,7 +55,6 @@ const EditBlog = () => {
         />
       </svg>
     ),
-
     Camera: () => (
       <svg
         width="20"
@@ -99,7 +70,6 @@ const EditBlog = () => {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-
         <circle
           cx="10"
           cy="11"
@@ -111,7 +81,6 @@ const EditBlog = () => {
         />
       </svg>
     ),
-
     Upload: () => (
       <svg
         width="16"
@@ -127,7 +96,6 @@ const EditBlog = () => {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-
         <path
           d="M5.33398 6.66699L8.00065 4.00033L10.6673 6.66699"
           stroke="currentColor"
@@ -135,7 +103,6 @@ const EditBlog = () => {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-
         <path
           d="M8 4V11.3333"
           stroke="currentColor"
@@ -145,7 +112,6 @@ const EditBlog = () => {
         />
       </svg>
     ),
-
     Save: () => (
       <svg
         width="20"
@@ -163,7 +129,6 @@ const EditBlog = () => {
         />
       </svg>
     ),
-
     Calendar: () => (
       <svg
         width="16"
@@ -181,16 +146,13 @@ const EditBlog = () => {
           stroke="currentColor"
           strokeWidth="1.2"
         />
-
         <path d="M2 6H14" stroke="currentColor" strokeWidth="1.2" />
-
         <path
           d="M5 1V3"
           stroke="currentColor"
           strokeWidth="1.2"
           strokeLinecap="round"
         />
-
         <path
           d="M11 1V3"
           stroke="currentColor"
@@ -199,7 +161,6 @@ const EditBlog = () => {
         />
       </svg>
     ),
-
     User: () => (
       <svg
         width="16"
@@ -209,7 +170,6 @@ const EditBlog = () => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle cx="8" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.2" />
-
         <path
           d="M13 15C13 11.6863 10.7614 9 8 9C5.23858 9 3 11.6863 3 15"
           stroke="currentColor"
@@ -217,7 +177,6 @@ const EditBlog = () => {
         />
       </svg>
     ),
-
     Check: () => (
       <svg
         width="16"
@@ -235,7 +194,6 @@ const EditBlog = () => {
         />
       </svg>
     ),
-
     Back: () => (
       <svg
         width="20"
@@ -255,53 +213,47 @@ const EditBlog = () => {
     ),
   };
 
+  /* ---- Load blog data ---- */
   useEffect(() => {
+    const loadBlog = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/blogs/${id}`);
+
+        if (!response.ok) {
+          throw new Error('Blog not found');
+        }
+
+        const blogToEdit = await response.json();
+
+        setTitle(blogToEdit.title);
+        setBody(String(blogToEdit.body || '').replace(/<br\s*\/?\s*>/gi, '\n'));
+        setAuthor(blogToEdit.author);
+        setCategories(blogToEdit.categories || []);
+        setTags(blogToEdit.tags ? blogToEdit.tags.join(', ') : '');
+        setExistingImageUrl(blogToEdit.imageUrl || '');
+
+        if (blogToEdit.timestamp) {
+          setDate(new Date(blogToEdit.timestamp).toISOString().split('T')[0]);
+        } else {
+          setDate(new Date().toISOString().split('T')[0]);
+        }
+
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error loading blog:', err);
+        setError('Failed to load story for editing');
+        setIsLoading(false);
+      }
+    };
+
     loadBlog();
   }, [id]);
-
-  const loadBlog = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/blogs/${id}`);
-
-      if (!response.ok) {
-        throw new Error("Blog not found");
-      }
-
-      const blogToEdit = await response.json();
-
-      setTitle(blogToEdit.title);
-
-      setBody(String(blogToEdit.body || "").replace(/<br\s*\/?\s*>/gi, "\n"));
-
-      setAuthor(blogToEdit.author);
-
-      setCategories(blogToEdit.categories || []);
-
-      setTags(blogToEdit.tags ? blogToEdit.tags.join(", ") : "");
-
-      setExistingImageUrl(blogToEdit.imageUrl || "");
-
-      if (blogToEdit.timestamp) {
-        setDate(new Date(blogToEdit.timestamp).toISOString().split("T")[0]);
-      } else {
-        setDate(new Date().toISOString().split("T")[0]);
-      }
-
-      setIsLoading(false);
-    } catch (err) {
-      console.error("Error loading blog:", err);
-
-      setError("Failed to load story for editing");
-
-      setIsLoading(false);
-    }
-  };
 
   const handleCategoryToggle = (category) => {
     setCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category],
+        : [...prev, category]
     );
   };
 
@@ -309,88 +261,65 @@ const EditBlog = () => {
     const file = e.target.files[0];
 
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        setError("Please upload an image file");
-
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload an image file');
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setError("Image size should be less than 5MB");
-
+        setError('Image size should be less than 5MB');
         return;
       }
 
       setImage(file);
-
-      setExistingImageUrl("");
+      setExistingImageUrl('');
 
       const reader = new FileReader();
-
-      reader.onload = (e) => {
-        setImagePreview(e.target.result);
+      reader.onload = (event) => {
+        setImagePreview(event.target.result);
       };
-
       reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveImage = () => {
     setImage(null);
-
-    setImagePreview("");
-
-    setExistingImageUrl("");
+    setImagePreview('');
+    setExistingImageUrl('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError(null);
 
     if (categories.length === 0) {
-      setError("Please select at least one category");
-
+      setError('Please select at least one category');
       return;
     }
 
     let imageUrl = existingImageUrl;
-
     if (image) {
       imageUrl = imagePreview;
     }
 
-    const formattedDate = new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-
-      month: "long",
-
-      day: "numeric",
+    const formattedDate = new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
 
     const updatedBlog = {
       id: id,
-
       title,
-
-      body: body.replace(/\n/g, "<br>"),
-
+      body: body.replace(/\n/g, '<br>'),
       author,
-
       categories,
-
       tags: tags
-
-        .split(",")
-
+        .split(',')
         .map((tag) => tag.trim())
-
         .filter((tag) => tag),
-
       date: formattedDate,
-
       timestamp: new Date(date).getTime(),
-
       imageUrl: imageUrl || null,
     };
 
@@ -398,31 +327,25 @@ const EditBlog = () => {
 
     try {
       const response = await fetch(`http://localhost:3001/blogs/${id}`, {
-        method: "PUT",
-
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-
         body: JSON.stringify(updatedBlog),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update blog");
+        throw new Error('Failed to update blog');
       }
 
       const savedBlog = await response.json();
-
-      console.log("Story updated:", savedBlog);
+      console.log('Story updated:', savedBlog);
 
       setPending(false);
-
       navigate(`/blogs/${id}`);
-    } catch (error) {
-      console.error("Error updating story:", error);
-
-      setError("Failed to update story. Please try again.");
-
+    } catch (err) {
+      console.error('Error updating story:', err);
+      setError('Failed to update story. Please try again.');
       setPending(false);
     }
   };
@@ -438,7 +361,6 @@ const EditBlog = () => {
           <div className="edit-loading-spinner">
             <Icons.Loading />
           </div>
-
           <p className="edit-loading-text">Loading story for editing...</p>
         </div>
       </div>
@@ -447,8 +369,6 @@ const EditBlog = () => {
 
   return (
     <div className="edit-container">
-      {/* Header with back navigation */}
-
       <div className="edit-navigation">
         <button onClick={handleCancel} className="edit-back-btn">
           <Icons.Back />
@@ -458,18 +378,14 @@ const EditBlog = () => {
 
       <div className="edit-header">
         <h1 className="edit-title">Edit Story</h1>
-
         <p className="edit-subtitle">
           Refine your narrative with precision and care
         </p>
-
         {error && <div className="edit-error">{error}</div>}
       </div>
 
       <form onSubmit={handleSubmit} className="edit-form">
         <div className="edit-form-grid">
-          {/* Image Upload Section */}
-
           <div className="edit-form-group edit-full-width">
             <label className="edit-form-label">Visual Narrative</label>
 
@@ -492,7 +408,6 @@ const EditBlog = () => {
                     <span className="edit-placeholder-icon">
                       <Icons.Camera />
                     </span>
-
                     <span className="edit-placeholder-text">
                       No image selected
                     </span>
@@ -508,13 +423,10 @@ const EditBlog = () => {
                   onChange={handleImageUpload}
                   className="edit-file-input"
                 />
-
                 <label htmlFor="edit-image-upload" className="edit-upload-btn">
                   <Icons.Upload />
-
-                  {existingImageUrl ? "Change Image" : "Choose Image"}
+                  {existingImageUrl ? 'Change Image' : 'Choose Image'}
                 </label>
-
                 {(image || existingImageUrl) && (
                   <button
                     type="button"
@@ -532,11 +444,8 @@ const EditBlog = () => {
             </div>
           </div>
 
-          {/* Title */}
-
           <div className="edit-form-group edit-full-width">
             <label className="edit-form-label">Story Title</label>
-
             <input
               type="text"
               required
@@ -547,56 +456,42 @@ const EditBlog = () => {
             />
           </div>
 
-          {/* Date and Author */}
-
           <div className="edit-form-group">
             <label className="edit-form-label">Publication Date</label>
-
             <div className="edit-input-with-icon">
               <Icons.Calendar />
-
               <input
                 type="date"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 className="edit-form-input"
-                max={new Date().toISOString().split("T")[0]}
+                max={new Date().toISOString().split('T')[0]}
               />
             </div>
           </div>
 
           <div className="edit-form-group">
             <label className="edit-form-label">Author</label>
-
             <div className="edit-input-with-icon">
               <Icons.User />
-
               <select
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
                 className="edit-form-select"
               >
                 <option value="Denish Awajo">Denish Awajo</option>
-
                 <option value="Patrick Mugure">Patrick Mugure</option>
-
                 <option value="Ejidio Maina">Ejidio Maina</option>
-
                 <option value="George Mwangi">George Mwangi</option>
-
                 <option value="Vyonnah Nyambura">Vyonnah Nyambura</option>
-
                 <option value="Guest">Guest</option>
               </select>
             </div>
           </div>
 
-          {/* Content */}
-
           <div className="edit-form-group edit-full-width">
             <label className="edit-form-label">Story Content</label>
-
             <textarea
               required
               value={body}
@@ -607,13 +502,10 @@ const EditBlog = () => {
             ></textarea>
           </div>
 
-          {/* Categories */}
-
           <div className="edit-form-group edit-full-width">
             <label className="edit-form-label">
               Categories <span className="edit-required">*</span>
             </label>
-
             <div className="edit-categories-grid">
               {availableCategories.map((category) => (
                 <label key={category} className="edit-category-card">
@@ -623,10 +515,8 @@ const EditBlog = () => {
                     onChange={() => handleCategoryToggle(category)}
                     className="edit-category-input"
                   />
-
                   <div className="edit-category-content">
                     <span className="edit-category-name">{category}</span>
-
                     {categories.includes(category) && (
                       <span className="edit-category-check">
                         <Icons.Check />
@@ -636,17 +526,13 @@ const EditBlog = () => {
                 </label>
               ))}
             </div>
-
             <small className="edit-form-help">
               Select at least one category to help readers find your story
             </small>
           </div>
 
-          {/* Tags */}
-
           <div className="edit-form-group edit-full-width">
             <label className="edit-form-label">Story Tags</label>
-
             <input
               type="text"
               value={tags}
@@ -654,7 +540,6 @@ const EditBlog = () => {
               className="edit-form-input"
               placeholder="Add descriptive tags separated by commas..."
             />
-
             <small className="edit-form-help">
               Optional: Enhance discoverability with relevant tags
             </small>
@@ -673,19 +558,17 @@ const EditBlog = () => {
 
           <button
             type="submit"
-            className={`edit-btn-submit ${pending ? "edit-submitting" : ""}`}
+            className={`edit-btn-submit ${pending ? 'edit-submitting' : ''}`}
             disabled={pending}
           >
             {pending ? (
               <>
                 <div className="edit-btn-spinner"></div>
-
                 <span className="edit-btn-text">Saving Changes...</span>
               </>
             ) : (
               <>
                 <Icons.Save />
-
                 <span className="edit-btn-text">Save Changes</span>
               </>
             )}

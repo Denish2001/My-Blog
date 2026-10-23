@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import "./Login.css";
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
+    username: '',
+    password: '',
   });
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || "/create";
+  const from = location.state?.from?.pathname || '/create';
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -24,7 +24,7 @@ const Login = () => {
       [name]: value,
     }));
 
-    setError("");
+    setError('');
   };
 
   const handleSubmit = async (event) => {
@@ -33,7 +33,7 @@ const Login = () => {
     if (isLoading) return;
 
     setIsLoading(true);
-    setError("");
+    setError('');
 
     try {
       // Simulate a short authentication delay.
@@ -42,24 +42,24 @@ const Login = () => {
       // Demo credentials only. Replace with a real backend
       // authentication request before deploying publicly.
       const isValid =
-        credentials.username === "kimcpgd" &&
-        credentials.password === "pgd2025@12345";
+        credentials.username === 'kimcpgd' &&
+        credentials.password === 'pgd2025@12345';
 
       if (!isValid) {
-        setError("Invalid username or password. Please try again.");
+        setError('Invalid username or password. Please try again.');
         return;
       }
 
       // Keep this key consistent with ProtectedRoute.jsx.
       // This is a demo flag, not a secure authentication token.
-      localStorage.setItem("token", "demo-authenticated");
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("username", credentials.username);
+      localStorage.setItem('token', 'demo-authenticated');
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('username', credentials.username);
 
       navigate(from, { replace: true });
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Something went wrong. Please try again.");
+      console.error('Login error:', err);
+      setError('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }

@@ -1,22 +1,22 @@
-import { useState, useId } from "react";
-import { Link } from "react-router-dom";
-import "./Contact.css";
+import { useState, useId } from 'react';
+import { Link } from 'react-router-dom';
+import './Contact.css';
 
 /* ------------------------------------------------------------------
    Icons
 ------------------------------------------------------------------ */
 const ICONS = {
   email:
-    "M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z",
+    'M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z',
   phone:
-    "M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z",
+    'M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z',
   location:
-    "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
-  check: "M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z",
-  arrow: "M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z",
+    'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+  check: 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
+  arrow: 'M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z',
 };
 
-const Icon = ({ name, className = "" }) => (
+const Icon = ({ name, className = '' }) => (
   <svg
     viewBox="0 0 24 24"
     className={`icon ${className}`.trim()}
@@ -32,82 +32,82 @@ const Icon = ({ name, className = "" }) => (
 ------------------------------------------------------------------ */
 const CONTACT_METHODS = [
   {
-    icon: "email",
-    title: "Editorial",
-    detail: "editor@pgdblog.com",
-    description: "Story tips, corrections, submissions",
-    href: "mailto:editor@pgdblog.com",
+    icon: 'email',
+    title: 'Editorial',
+    detail: 'editor@pgdblog.com',
+    description: 'Story tips, corrections, submissions',
+    href: 'mailto:editor@pgdblog.com',
   },
   {
-    icon: "email",
-    title: "General",
-    detail: "hello@pgdblog.com",
-    description: "Everything else",
-    href: "mailto:hello@pgdblog.com",
+    icon: 'email',
+    title: 'General',
+    detail: 'hello@pgdblog.com',
+    description: 'Everything else',
+    href: 'mailto:hello@pgdblog.com',
   },
   {
-    icon: "phone",
-    title: "Phone",
-    detail: "+254 (0)20 600 1000",
-    description: "Mon–Fri, 9:00–17:00 EAT",
-    href: "tel:+254206001000",
+    icon: 'phone',
+    title: 'Phone',
+    detail: '+254 (0)20 600 1000',
+    description: 'Mon–Fri, 9:00–17:00 EAT',
+    href: 'tel:+254206001000',
   },
   {
-    icon: "location",
-    title: "Visit",
-    detail: "Uholo Road, off Mombasa Road",
-    description: "Nairobi, Kenya",
-    href: "https://maps.google.com/?q=Kenya+Institute+of+Mass+Communication",
+    icon: 'location',
+    title: 'Visit',
+    detail: 'Uholo Road, off Mombasa Road',
+    description: 'Nairobi, Kenya',
+    href: 'https://maps.google.com/?q=Kenya+Institute+of+Mass+Communication',
     external: true,
   },
 ];
 
 const TOPICS = [
-  "General inquiry",
-  "Story tip",
-  "Correction",
-  "Collaboration",
-  "Press / media",
+  'General inquiry',
+  'Story tip',
+  'Correction',
+  'Collaboration',
+  'Press / media',
 ];
 
 const DEPARTMENTS = [
   {
-    name: "Journalism & Media Studies",
-    email: "journalism@kimc.ac.ke",
-    phone: "+254 (0)20 600 1001",
+    name: 'Journalism & Media Studies',
+    email: 'journalism@kimc.ac.ke',
+    phone: '+254 (0)20 600 1001',
   },
   {
-    name: "Film & Television Production",
-    email: "film@kimc.ac.ke",
-    phone: "+254 (0)20 600 1002",
+    name: 'Film & Television Production',
+    email: 'film@kimc.ac.ke',
+    phone: '+254 (0)20 600 1002',
   },
   {
-    name: "Public Relations",
-    email: "pr@kimc.ac.ke",
-    phone: "+254 (0)20 600 1003",
+    name: 'Public Relations',
+    email: 'pr@kimc.ac.ke',
+    phone: '+254 (0)20 600 1003',
   },
   {
-    name: "Library Services",
-    email: "library@kimc.ac.ke",
-    phone: "+254 (0)20 600 1004",
+    name: 'Library Services',
+    email: 'library@kimc.ac.ke',
+    phone: '+254 (0)20 600 1004',
   },
 ];
 
 const FAQ = [
   {
-    q: "How do I submit a story or pitch?",
-    a: "Email editor@pgdblog.com with a one-paragraph pitch and any relevant links. We reply to every serious pitch within a week.",
+    q: 'How do I submit a story or pitch?',
+    a: 'Email editor@pgdblog.com with a one-paragraph pitch and any relevant links. We reply to every serious pitch within a week.',
   },
   {
-    q: "Do you accept corrections?",
-    a: "Yes. Email editor@pgdblog.com with the article URL and the specific correction. Verified corrections are published with a dated note.",
+    q: 'Do you accept corrections?',
+    a: 'Yes. Email editor@pgdblog.com with the article URL and the specific correction. Verified corrections are published with a dated note.',
   },
   {
-    q: "Can I republish your work?",
-    a: "Most articles are available under a standard attribution license. Email hello@pgdblog.com with the article link and where it will appear.",
+    q: 'Can I republish your work?',
+    a: 'Most articles are available under a standard attribution license. Email hello@pgdblog.com with the article link and where it will appear.',
   },
   {
-    q: "How do I join the team?",
+    q: 'How do I join the team?',
     a: "The blog is run by KIMC's Postgraduate Mass Communication class of 2025. Openings, when they exist, are announced on the Team page.",
   },
 ];
@@ -141,11 +141,11 @@ const Field = ({ id, label, required, children, hint, error }) => (
 const Contact = () => {
   const id = useId();
   const [form, setForm] = useState({
-    name: "",
-    email: "",
+    name: '',
+    email: '',
     topic: TOPICS[0],
-    subject: "",
-    message: "",
+    subject: '',
+    message: '',
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -159,13 +159,13 @@ const Contact = () => {
 
   const validate = () => {
     const next = {};
-    if (!form.name.trim()) next.name = "Please add your name.";
-    if (!form.email.trim()) next.email = "Please add your email.";
+    if (!form.name.trim()) next.name = 'Please add your name.';
+    if (!form.email.trim()) next.email = 'Please add your email.';
     else if (!/^\S+@\S+\.\S+$/.test(form.email))
       next.email = "That email doesn't look quite right.";
-    if (!form.subject.trim()) next.subject = "Please add a subject.";
+    if (!form.subject.trim()) next.subject = 'Please add a subject.';
     if (form.message.trim().length < 10)
-      next.message = "Please write at least a few words.";
+      next.message = 'Please write at least a few words.';
     return next;
   };
 
@@ -187,13 +187,13 @@ const Contact = () => {
     await new Promise((r) => setTimeout(r, 900));
 
     setIsSubmitting(false);
-    setStatus("success");
+    setStatus('success');
     setForm({
-      name: "",
-      email: "",
+      name: '',
+      email: '',
       topic: TOPICS[0],
-      subject: "",
-      message: "",
+      subject: '',
+      message: '',
     });
   };
 
@@ -230,13 +230,13 @@ const Contact = () => {
               <div className="section-header__line" />
             </header>
 
-            {status === "success" ? (
+            {status === 'success' ? (
               <div className="contact-success" role="status" aria-live="polite">
                 <Icon name="check" className="contact-success__icon" />
                 <div>
                   <h3 className="contact-success__title">Message received</h3>
                   <p className="contact-success__text">
-                    We'll reply within two business days. If it's urgent, email{" "}
+                    We'll reply within two business days. If it's urgent, email{' '}
                     <a href="mailto:editor@pgdblog.com">editor@pgdblog.com</a>.
                   </p>
                   <button
@@ -352,7 +352,7 @@ const Contact = () => {
                     className="btn btn--primary"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Sending…" : "Send message"}
+                    {isSubmitting ? 'Sending…' : 'Send message'}
                     {!isSubmitting && <Icon name="arrow" />}
                   </button>
                   <p className="contact-form__note">
@@ -377,7 +377,7 @@ const Contact = () => {
                     href={m.href}
                     className="contact-method"
                     {...(m.external
-                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
                       : {})}
                   >
                     <span className="contact-method__icon">
@@ -421,7 +421,7 @@ const Contact = () => {
                   {d.email}
                 </a>
                 <a
-                  href={`tel:${d.phone.replace(/\D/g, "")}`}
+                  href={`tel:${d.phone.replace(/\D/g, '')}`}
                   className="contact-dept__link"
                 >
                   {d.phone}

@@ -8,7 +8,7 @@ import './Navbar.css';
 const NAV_LINKS = [
   { path: '/', label: 'Home' },
   { path: '/AllStories', label: 'Stories' },
-  { path: '/Magazine', label: 'Magazine' }, // <-- Added
+  { path: '/Magazine', label: 'Magazine' },
   { path: '/About', label: 'About' },
   { path: '/Team', label: 'Team' },
   { path: '/Contact', label: 'Contact' },
@@ -79,10 +79,9 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* ---- Close on route change ---- */
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  /* ---- Close menu on route change ----
+     Handled by onClick={close} on every link.
+     No effect needed. */
 
   /* ---- Lock body scroll while drawer open ---- */
   useEffect(() => {
@@ -102,13 +101,11 @@ const Navbar = () => {
     const trigger = toggleRef.current;
     if (!drawer) return;
 
-    // Focus first link when opened
     const focusTimer = window.setTimeout(
       () => firstLinkRef.current?.focus(),
       50
     );
 
-    // Trap focus inside drawer
     const onKeyDown = (e) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -149,15 +146,11 @@ const Navbar = () => {
 
   return (
     <>
-      {/* ============================================================
-          HEADER
-      ============================================================ */}
       <header
         className={`navbar ${isScrolled ? 'is-scrolled' : ''}`}
         role="banner"
       >
         <div className="navbar__inner">
-          {/* ---- Logo ---- */}
           <Link
             to="/"
             className="navbar__brand"
@@ -182,7 +175,6 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* ---- Desktop nav ---- */}
           <nav className="navbar__links" aria-label="Primary">
             {NAV_LINKS.map((link) => {
               const active = isActive(link.path);
@@ -200,7 +192,6 @@ const Navbar = () => {
             })}
           </nav>
 
-          {/* ---- Mobile toggle ---- */}
           <button
             ref={toggleRef}
             type="button"
@@ -215,9 +206,6 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* ============================================================
-          MOBILE DRAWER
-      ============================================================ */}
       <div
         className={`drawer ${isOpen ? 'is-open' : ''}`}
         aria-hidden={!isOpen}
