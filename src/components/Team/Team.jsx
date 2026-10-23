@@ -105,7 +105,7 @@ const TEAM = [
   },
   {
     id: 7,
-    name: 'Bridgette Muthoni',
+    name: 'Bridget Muthoni',
     role: 'Contributor',
     email: 'bridgette@pgd.com',
     bio: 'Contributes to the visual direction of the publication, shaping how stories are presented through design and imagery.',
