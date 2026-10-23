@@ -68,7 +68,7 @@ const Icon = ({ name, className = '' }) => (
 ================================================================ */
 const NewsletterForm = () => {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState(null); // null | 'submitting' | 'success' | 'error'
+  const [status, setStatus] = useState(null);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -85,10 +85,7 @@ const NewsletterForm = () => {
     }
 
     setStatus('submitting');
-
-    // No backend — simulate honestly. Swap this for a real API call.
     await new Promise((r) => setTimeout(r, 700));
-
     setStatus('success');
     setEmail('');
     setTimeout(() => setStatus(null), 4000);
@@ -160,9 +157,6 @@ const Footer = () => {
   return (
     <footer className="footer" role="contentinfo">
       <div className="footer__inner">
-        {/* ============================================================
-            MAIN GRID
-        ============================================================ */}
         <div className="footer__grid">
           {/* Brand column */}
           <div className="footer__brand">
@@ -248,9 +242,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* ============================================================
-            BOTTOM BAR
-        ============================================================ */}
         <div className="footer__bottom">
           <p className="footer__copy">
             © {year} KIMC Postgraduate Mass Communication Class.

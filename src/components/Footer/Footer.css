@@ -363,3 +363,78 @@
     justify-content: center;
   }
 }
+/* ============================================================
+   MOBILE FIXES (Footer)
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* 1. Stack footer columns */
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    text-align: center;
+  }
+
+  /* 2. Center brand & socials */
+  .footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer__socials {
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* 3. Center nav and contact lists */
+  .footer__col {
+    align-items: center;
+  }
+
+  .footer__links {
+    align-items: center;
+  }
+
+  /* 4. Fix Newsletter form stacking */
+  .footer__col--news {
+    width: 100%;
+    max-width: 400px;
+    margin-inline: auto;
+  }
+
+  .footer-news__field {
+    flex-direction: column;
+    background: transparent;
+    border: none;
+    gap: var(--space-sm);
+  }
+
+  .footer-news__input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-xs);
+    padding: var(--space-md);
+  }
+
+  .footer-news__btn {
+    width: 100%;
+    border-radius: var(--radius-xs);
+    padding: var(--space-md);
+    justify-content: center;
+  }
+
+  /* 5. Stack bottom bar */
+  .footer__bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .footer__legal {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

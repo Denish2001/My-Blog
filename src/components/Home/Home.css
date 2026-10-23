@@ -7,22 +7,20 @@
   background: var(--color-background);
 }
 
-/* ------------------------------------------------------------
-   SPOTLIGHT (hero carousel)
-   Always sits on dark photography — never inherits theme colors.
------------------------------------------------------------- */
+/* ============================================================
+   SPOTLIGHT (Hero carousel) — Mobile-First Responsive
+   ============================================================ */
+
 .spotlight {
   position: relative;
-  height: 92vh;
-  min-height: 620px;
   background: #0f0f0f;
   overflow: hidden;
+  /* Mobile default: flex column, no fixed height */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Force light text on the SPECIFIC text elements inside the
-   spotlight. Deliberately NOT a wildcard `*` selector, because
-   that would also catch buttons whose color scheme we define
-   explicitly below. */
+/* Force light text on specific elements */
 .spotlight__title {
   color: #ffffff;
 }
@@ -40,27 +38,37 @@
 
 .spotlight__stage {
   position: relative;
-  height: 100%;
+  width: 100%;
+  flex: 1;
+  /* Mobile: no absolute height. Let content dictate. */
+  display: flex;
+  flex-direction: column;
 }
 
 .spotlight__slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 900ms var(--ease-standard);
+  display: none;
+  flex-direction: column;
+  width: 100%;
 }
 .spotlight__slide.is-active {
-  opacity: 1;
-  pointer-events: auto;
+  display: flex;
 }
 
 .spotlight__media {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
+  /* Mobile: image becomes a fixed-height banner */
+  height: 45vh;
+  min-height: 320px;
+  max-height: 480px;
+  overflow: hidden;
+  background: #0a0a0a;
 }
 
 .spotlight__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transform: scale(1);
   transition: transform 9s var(--ease-emphasis);
 }
@@ -68,62 +76,51 @@
   transform: scale(1.05);
 }
 
-/* Two-layer scrim — bottom-up + left-to-right, guarantees
-   contrast on any photograph. */
 .spotlight__scrim {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.92) 0%,
-      rgba(0, 0, 0, 0.75) 35%,
-      rgba(0, 0, 0, 0.35) 65%,
-      rgba(0, 0, 0, 0.15) 100%
-    ),
-    linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.85) 0%,
-      rgba(0, 0, 0, 0.5) 45%,
-      rgba(0, 0, 0, 0.1) 100%
-    );
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
 }
 
+/* Mobile: content flows BELOW the image */
 .spotlight__content {
-  position: absolute;
-  left: 0;
-  bottom: 0;
+  position: relative;
+  width: 100%;
+  padding: var(--space-xl) var(--space-lg);
+  background: #0f0f0f;
   z-index: 2;
-  max-width: 720px;
-  padding: var(--space-3xl);
 }
 
 .spotlight__meta {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-  animation: fadeUp 700ms 200ms var(--ease-standard) backwards;
+  font-size: var(--font-size-sm);
+  flex-wrap: wrap;
 }
 
 .spotlight__title {
   font-family: var(--font-display);
-  font-size: clamp(1.9rem, 4.2vw, var(--font-size-3xl));
+  font-size: clamp(1.5rem, 5vw, 2rem);
   font-weight: var(--font-weight-bold);
-  line-height: var(--lh-tight);
+  line-height: 1.15;
   letter-spacing: var(--tracking-tight);
-  text-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.7),
-    0 2px 12px rgba(0, 0, 0, 0.35);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
   text-wrap: balance;
-  animation: fadeUp 700ms 300ms var(--ease-standard) backwards;
 }
 
 .spotlight__excerpt {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   line-height: var(--lh-normal);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
-  margin-bottom: var(--space-xl);
-  animation: fadeUp 700ms 400ms var(--ease-standard) backwards;
+  margin-bottom: var(--space-lg);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .spotlight__footer {
@@ -132,49 +129,42 @@
   justify-content: space-between;
   gap: var(--space-md);
   flex-wrap: wrap;
-  animation: fadeUp 700ms 500ms var(--ease-standard) backwards;
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .spotlight__author {
   font-size: var(--font-size-sm);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
 }
 
-/* ------------------------------------------------------------
-   CTA — white pill on dark photo. Must ALWAYS be readable.
-   Specificity .spotlight .spotlight__cta (0-2-0) beats both
-   `.btn.btn--primary` (0-2-0 tie, later rule wins) AND the
-   old wildcard guard `.spotlight__content *` (0-1-1).
------------------------------------------------------------- */
+/* CTA: white pill, always readable */
 .spotlight .spotlight__cta {
   background: #ffffff;
   color: #000000;
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
 }
-
 .spotlight .spotlight__cta:hover {
   background: var(--color-accent);
   color: #ffffff;
   border-color: var(--color-accent);
   box-shadow: 0 4px 16px rgba(0, 102, 204, 0.4);
 }
-
-/* Arrow icon follows the button's own text color, so it's
-   black on white and white on blue automatically. */
 .spotlight .spotlight__cta .icon {
   color: inherit;
   fill: currentColor;
 }
 
-/* ---- Nav dots ---- */
+/* ---- Nav dots ----
+   Positioned BELOW content on mobile, not overlaid */
 .spotlight__nav {
-  position: absolute;
-  bottom: var(--space-2xl);
-  right: var(--space-2xl);
-  z-index: 3;
   display: flex;
+  justify-content: center;
   gap: var(--space-xs);
+  padding: var(--space-lg) var(--space-lg) var(--space-md);
+  background: #0f0f0f;
 }
 
 .spotlight__dot {
@@ -182,7 +172,6 @@
   height: 4px;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   transition:
     background var(--transition-base),
     width var(--transition-base);
@@ -195,30 +184,242 @@
   background: rgba(255, 255, 255, 0.65);
 }
 
-/* ---- Numeric counter ---- */
+/* ---- Numeric counter ----
+   Hidden on mobile (was overlapping) */
 .spotlight__counter {
-  position: absolute;
-  top: var(--space-2xl);
-  right: var(--space-2xl);
-  z-index: 3;
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2xs);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: rgba(255, 255, 255, 0.55);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  letter-spacing: var(--tracking-wide);
-  font-variant-numeric: tabular-nums;
-}
-.spotlight__counter strong {
-  color: #ffffff;
-  font-weight: var(--font-weight-bold);
+  display: none;
 }
 
-/* ------------------------------------------------------------
+/* ============================================================
+   TABLET & DESKTOP — Restore absolute positioning
+   ============================================================ */
+@media (min-width: 900px) {
+  .spotlight {
+    display: block;
+    height: 92vh;
+    min-height: 620px;
+    position: relative;
+  }
+
+  .spotlight__stage {
+    position: relative;
+    height: 100%;
+    display: block;
+  }
+
+  .spotlight__slide {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 900ms var(--ease-standard);
+  }
+  .spotlight__slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .spotlight__media {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    max-height: none;
+  }
+
+  .spotlight__scrim {
+    background:
+      linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.92) 0%,
+        rgba(0, 0, 0, 0.75) 35%,
+        rgba(0, 0, 0, 0.35) 65%,
+        rgba(0, 0, 0, 0.15) 100%
+      ),
+      linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.85) 0%,
+        rgba(0, 0, 0, 0.5) 45%,
+        rgba(0, 0, 0, 0.1) 100%
+      );
+  }
+
+  .spotlight__content {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    max-width: 720px;
+    padding: var(--space-3xl);
+    background: transparent;
+  }
+
+  .spotlight__meta {
+    margin-bottom: var(--space-lg);
+    font-size: var(--font-size-base);
+  }
+
+  .spotlight__title {
+    font-size: clamp(1.9rem, 4.2vw, var(--font-size-3xl));
+    margin-bottom: var(--space-lg);
+    text-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.7),
+      0 2px 12px rgba(0, 0, 0, 0.35);
+  }
+
+  .spotlight__excerpt {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-xl);
+    -webkit-line-clamp: unset;
+    display: block;
+  }
+
+  .spotlight__footer {
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .spotlight__nav {
+    position: absolute;
+    bottom: var(--space-2xl);
+    right: var(--space-2xl);
+    padding: 0;
+    background: transparent;
+    justify-content: flex-end;
+  }
+
+  .spotlight__counter {
+    display: flex;
+    position: absolute;
+    top: var(--space-2xl);
+    right: var(--space-2xl);
+    z-index: 3;
+    align-items: baseline;
+    gap: var(--space-2xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: rgba(255, 255, 255, 0.55);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    letter-spacing: var(--tracking-wide);
+    font-variant-numeric: tabular-nums;
+  }
+  .spotlight__counter strong {
+    color: #ffffff;
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1200px) {
+  .spotlight__content {
+    padding: var(--space-2xl);
+  }
+}
+
+/* ============================================================
+   MAGAZINE FEATURE
+   ============================================================ */
+
+.magazine-feature {
+  background: var(--color-surface);
+}
+
+.magazine-banner-feature {
+  display: grid;
+  grid-template-columns: 0.6fr 1fr;
+  gap: var(--space-2xl);
+  align-items: center;
+  background: var(--color-background);
+  border: var(--border-thin);
+  border-radius: var(--radius-xs);
+  padding: var(--space-2xl);
+  overflow: hidden;
+}
+
+.magazine-banner-feature__visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.magazine-banner-feature__cover {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 3 / 4;
+  border-radius: 2px 6px 6px 2px;
+  box-shadow:
+    -8px 8px 20px rgba(0, 0, 0, 0.15),
+    inset 3px 0 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transform: rotateY(-5deg);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+  cursor: pointer;
+}
+
+.magazine-banner-feature__cover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.magazine-banner-feature__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.magazine-banner-feature__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.magazine-banner-feature__cover:hover {
+  transform: rotateY(0deg) translateY(-5px);
+  box-shadow:
+    -12px 15px 30px rgba(0, 0, 0, 0.2),
+    inset 3px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.magazine-banner-feature__cover:hover .magazine-banner-feature__overlay {
+  opacity: 1;
+}
+
+.magazine-banner-feature__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, var(--font-size-3xl));
+  font-weight: var(--font-weight-bold);
+  line-height: var(--lh-tight);
+  color: var(--color-primary);
+  margin-block: var(--space-xs) var(--space-md);
+  text-wrap: balance;
+}
+
+.magazine-banner-feature__text {
+  font-size: var(--font-size-lg);
+  line-height: var(--lh-relaxed);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl);
+  max-width: 55ch;
+}
+
+/* ============================================================
    STORY CARDS
------------------------------------------------------------- */
+   ============================================================ */
+
 .story-card {
   animation: fadeUp 500ms var(--ease-standard) backwards;
 }
@@ -291,9 +492,10 @@
   height: 16px;
 }
 
-/* ------------------------------------------------------------
+/* ============================================================
    CATEGORIES
------------------------------------------------------------- */
+   ============================================================ */
+
 .categories {
   background: var(--color-surface);
   max-width: none;
@@ -385,9 +587,10 @@
   transform: scaleX(1);
 }
 
-/* ------------------------------------------------------------
+/* ============================================================
    ABOUT
------------------------------------------------------------- */
+   ============================================================ */
+
 .about__grid {
   align-items: center;
 }
@@ -446,174 +649,55 @@
   }
 }
 
-/* ------------------------------------------------------------
-   RESPONSIVE
------------------------------------------------------------- */
-@media (max-width: 1024px) {
-  .spotlight__content {
-    padding: var(--space-2xl);
-  }
-  .about__visual {
-    height: 320px;
-  }
-}
-
-@media (max-width: 768px) {
-  .spotlight {
-    height: 88vh;
-    min-height: 540px;
-  }
-  .spotlight__content {
-    padding: var(--space-xl);
-  }
-  .spotlight__nav {
-    bottom: var(--space-xl);
-    right: var(--space-xl);
-  }
-  .spotlight__counter {
-    top: var(--space-xl);
-    right: var(--space-xl);
-  }
-}
-
-@media (max-width: 480px) {
-  .spotlight__content {
-    padding: var(--space-lg);
-  }
-  .spotlight__title {
-    font-size: 1.5rem;
-  }
-  .spotlight__excerpt {
-    font-size: var(--font-size-base);
-  }
-  .spotlight__footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-md);
-  }
-  .spotlight__counter {
-    display: none;
-  }
-}
 /* ============================================================
-   MAGAZINE FEATURE (Home)
+   MOBILE RESPONSIVE FIXES (Below 900px)
    ============================================================ */
 
-.magazine-feature {
-  background: var(--color-surface);
-}
-
-.magazine-banner-feature {
-  display: grid;
-  grid-template-columns: 0.6fr 1fr; /* Gives the cover a bit less width */
-  gap: var(--space-2xl);
-  align-items: center;
-  background: var(--color-background);
-  border: var(--border-thin);
-  border-radius: var(--radius-xs);
-  padding: var(--space-2xl);
-  overflow: hidden;
-}
-
-/* Cover wrapper */
-.magazine-banner-feature__visual {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.magazine-banner-feature__cover {
-  position: relative;
-  display: block;
-  width: 100%;
-  max-width: 320px;
-  aspect-ratio: 3 / 4;
-  border-radius: 2px 6px 6px 2px;
-  box-shadow:
-    -8px 8px 20px rgba(0, 0, 0, 0.15),
-    inset 3px 0 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transform: rotateY(-5deg);
-  transition:
-    transform var(--transition-base),
-    box-shadow var(--transition-base);
-  cursor: pointer;
-}
-
-/* The book spine */
-.magazine-banner-feature__cover::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 8px;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.magazine-banner-feature__cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.magazine-banner-feature__overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity var(--transition-base);
-}
-
-.magazine-banner-feature__cover:hover {
-  transform: rotateY(0deg) translateY(-5px);
-  box-shadow:
-    -12px 15px 30px rgba(0, 0, 0, 0.2),
-    inset 3px 0 8px rgba(0, 0, 0, 0.1);
-}
-
-.magazine-banner-feature__cover:hover .magazine-banner-feature__overlay {
-  opacity: 1;
-}
-
-/* Content */
-.magazine-banner-feature__title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, var(--font-size-3xl));
-  font-weight: var(--font-weight-bold);
-  line-height: var(--lh-tight);
-  color: var(--color-primary);
-  margin-block: var(--space-xs) var(--space-md);
-  text-wrap: balance;
-}
-
-.magazine-banner-feature__text {
-  font-size: var(--font-size-lg);
-  line-height: var(--lh-relaxed);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-xl);
-  max-width: 55ch;
-}
-
-/* Responsive */
 @media (max-width: 900px) {
+  /* Fix Magazine Feature for mobile */
   .magazine-banner-feature {
     grid-template-columns: 1fr;
-    padding: var(--space-xl);
+    padding: var(--space-lg);
     text-align: center;
+    gap: var(--space-lg);
+  }
+
+  .magazine-banner-feature__visual {
+    width: 100%;
+    max-width: 260px;
+    margin: 0 auto;
   }
 
   .magazine-banner-feature__cover {
-    transform: rotateY(0deg);
-    margin-inline: auto;
+    transform: none;
   }
 
   .magazine-banner-feature__text {
     margin-inline: auto;
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Fix About section */
+  .about__grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: var(--space-xl);
+  }
+
+  .about__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about__title,
+  .about__text {
+    text-align: center;
+  }
+
+  .about__visual {
+    height: 240px;
   }
 }
